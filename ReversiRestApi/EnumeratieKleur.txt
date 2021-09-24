@@ -1,0 +1,1 @@
+public enum Kleur { Geen, Wit, Zwart };
