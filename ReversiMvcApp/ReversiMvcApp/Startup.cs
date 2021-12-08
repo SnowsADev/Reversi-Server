@@ -29,7 +29,7 @@ namespace ReversiMvcApp
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("ReversiConnection")));
 
             services.AddDbContext<ReversiDbContext>(options =>
                 options.UseSqlServer(
