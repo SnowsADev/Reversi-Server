@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Reversi_BackEnd.Models
+namespace Reversi_CL.Models
 {
 
     public class Spel : ISpel
@@ -11,6 +12,7 @@ namespace Reversi_BackEnd.Models
         public string Token { get; set; }
         public ICollection<Speler> Spelers { get; set; }
         public Kleur[] multiArray;
+        [NotMapped]
         public Kleur[,] Bord { get; set; }
 
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Reversi_CL.Models;
 using ReversiMvcApp.Data.ReversiDbContext;
 using ReversiMvcApp.Models;
 using System.Linq;

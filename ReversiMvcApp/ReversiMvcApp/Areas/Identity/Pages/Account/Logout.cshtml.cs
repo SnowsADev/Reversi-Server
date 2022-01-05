@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Reversi_CL.Models;
 using ReversiMvcApp.Models;
 
 namespace ReversiMvcApp.Areas.Identity.Pages.Account

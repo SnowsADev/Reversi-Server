@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ReversiMvcApp.Models
+namespace Reversi_CL.Models
 {
     public class Speler : IdentityUser
     {

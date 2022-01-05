@@ -204,3 +204,6 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvc
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.pdb
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.genruntimeconfig.cache
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.csprojAssemblyReference.cache
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\Reversi_CL.dll
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\Reversi_CL.pdb

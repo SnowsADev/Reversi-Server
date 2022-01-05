@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Reversi_CL.Models;
 using ReversiMvcApp.Data;
 using ReversiMvcApp.Data.ReversiDbContext;
 using ReversiMvcApp.Models;

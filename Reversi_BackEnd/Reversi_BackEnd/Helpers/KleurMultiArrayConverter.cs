@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Reversi_BackEnd.Models;
+using Reversi_CL.Models;
 
 namespace Reversi_BackEnd.Helpers
 {

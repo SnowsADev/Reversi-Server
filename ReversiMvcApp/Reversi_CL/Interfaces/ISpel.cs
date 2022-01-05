@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Reversi_BackEnd.Models
+namespace Reversi_CL.Models
 {
     public interface ISpel
     {

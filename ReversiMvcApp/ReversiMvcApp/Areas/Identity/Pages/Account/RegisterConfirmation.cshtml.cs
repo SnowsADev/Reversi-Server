@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using ReversiMvcApp.Models;
+using Reversi_CL.Models;
 
 namespace ReversiMvcApp.Areas.Identity.Pages.Account
 {

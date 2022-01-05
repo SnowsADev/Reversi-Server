@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Reversi_BackEnd.Helpers;
 using Reversi_BackEnd.Models;
+using Reversi_CL.Models;
 
 namespace Reversi_BackEnd.Controllers
 {
