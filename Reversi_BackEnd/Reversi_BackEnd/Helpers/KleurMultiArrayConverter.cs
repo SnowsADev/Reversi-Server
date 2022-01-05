@@ -3,7 +3,7 @@ using System;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using ReversiRestApi.Models;
+using Reversi_BackEnd.Models;
 
 namespace Reversi_BackEnd.Helpers
 {

@@ -22,9 +22,9 @@ namespace ReversiMvcApp.Controllers
 
         public IActionResult Index()
         {
-            ClaimsPrincipal currentUser = this.User;
-            var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            Debug.WriteLine(currentUserID);
+            //ClaimsPrincipal currentUser = this.User;
+            //var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //Debug.WriteLine(currentUserID);
 
             return View();
         }

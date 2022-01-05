@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ReversiMvcApp.Data.ReversiDbContext;
+using ReversiMvcApp.Models;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ReversiMvcApp.Data;
-using ReversiMvcApp.Models;
 
 namespace ReversiMvcApp.Controllers
 {
@@ -34,7 +31,7 @@ namespace ReversiMvcApp.Controllers
             }
 
             var speler = await _context.Speler
-                .FirstOrDefaultAsync(m => m.Guid == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (speler == null)
             {
                 return NotFound();
@@ -54,7 +51,7 @@ namespace ReversiMvcApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Guid,Naam,AantalGewonnen,AantalVerloren,AantalGelijk")] Speler speler)
+        public async Task<IActionResult> Create([Bind("Id,Naam,AantalGewonnen,AantalVerloren,AantalGelijk")] Speler speler)
         {
             if (ModelState.IsValid)
             {
@@ -86,9 +83,9 @@ namespace ReversiMvcApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Guid,Naam,AantalGewonnen,AantalVerloren,AantalGelijk")] Speler speler)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Naam,AantalGewonnen,AantalVerloren,AantalGelijk")] Speler speler)
         {
-            if (id != speler.Guid)
+            if (id != speler.Id)
             {
                 return NotFound();
             }
@@ -102,7 +99,7 @@ namespace ReversiMvcApp.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SpelerExists(speler.Guid))
+                    if (!SpelerExists(speler.Id))
                     {
                         return NotFound();
                     }
@@ -125,7 +122,7 @@ namespace ReversiMvcApp.Controllers
             }
 
             var speler = await _context.Speler
-                .FirstOrDefaultAsync(m => m.Guid == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (speler == null)
             {
                 return NotFound();
@@ -147,7 +144,7 @@ namespace ReversiMvcApp.Controllers
 
         private bool SpelerExists(string id)
         {
-            return _context.Speler.Any(e => e.Guid == id);
+            return _context.Speler.Any(e => e.Id == id);
         }
     }
 }
