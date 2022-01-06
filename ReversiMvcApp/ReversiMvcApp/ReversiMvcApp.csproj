@@ -6,9 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\ReversiDbContext\Migrations\20220105112018_InitDb.cs" />
+    <Compile Remove="Data\ReversiDbContext\Migrations\20220105112018_InitDb.Designer.cs" />
+    <Compile Remove="Data\ReversiDbContext\Migrations\20220105125941_AddedSpellenAsDbSet.cs" />
+    <Compile Remove="Data\ReversiDbContext\Migrations\20220105125941_AddedSpellenAsDbSet.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.22" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.22" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.22" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.22">
       <PrivateAssets>all</PrivateAssets>
@@ -19,6 +27,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Reversi_CL\Reversi_CL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\ReversiDbContext\Migrations\" />
+    <Folder Include="Data\ReversiDbIdentityContext\Migrations\" />
   </ItemGroup>
 
 </Project>

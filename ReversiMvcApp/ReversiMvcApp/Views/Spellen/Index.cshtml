@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Reversi_CL.Models.Spel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Overicht openstaande spellen</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Speler
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Omschrijving)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Spelers.FirstOrDefault().Naam)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Omschrijving)
+            </td>
+            <td>
+                <a class="btn btn-danger text-light" asp-action="Delete" asp-route-id="@item.ID">Doe mee!</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<a class="btn btn-primary" asp-area="" asp-action="Create">Begin nieuw spel</a>

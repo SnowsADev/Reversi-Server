@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Reversi_CL.Models;
 using ReversiMvcApp.Data;
 using ReversiMvcApp.Data.ReversiDbContext;
+using ReversiMvcApp.Data.ReversiDbIdentityContext;
 using ReversiMvcApp.Models;
 using System;
 using System.Collections.Generic;
@@ -34,16 +35,22 @@ namespace ReversiMvcApp
             //    options.UseSqlServer(
             //        Configuration.GetConnectionString("ReversiConnection")));
 
-            services.AddDbContext<ReversiDbContext>(options =>
+            services.AddDbContext<ReversiDbIdentityContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("ReversiConnection")));
 
             services.AddIdentity<Speler, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ReversiDbContext>()
+                .AddEntityFrameworkStores<ReversiDbIdentityContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
-            services.AddControllersWithViews();
+            services.AddDbContext<ReversiDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("ReversiConnection")));
+
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
+
             services.AddRazorPages();
         }
 

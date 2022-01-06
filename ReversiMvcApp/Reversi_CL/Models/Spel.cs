@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Reversi_CL.Models
@@ -6,19 +7,20 @@ namespace Reversi_CL.Models
 
     public class Spel : ISpel
     {
-        public Kleur AandeBeurt { get; set; }
+        [Key]
         public int ID { get; set; }
+        public Kleur AandeBeurt { get; set; }
         public string Omschrijving { get; set; }
         public string Token { get; set; }
         public ICollection<Speler> Spelers { get; set; }
-        public Kleur[] multiArray;
-        [NotMapped]
+        //public Kleur[] multiArray;
+        [Column(TypeName = "nvarchar(255)")]
         public Kleur[,] Bord { get; set; }
 
 
         public Spel()
         {
-            this.multiArray = new Kleur[8];
+            //this.multiArray = new Kleur[8];
             
             this.Bord = new Kleur[8, 8];
             this.Bord[3, 3] = Kleur.Wit;

@@ -1,8 +1,9 @@
-E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Debug\netcoreapp3.1\Reversi_CL.AssemblyInfoInputs.cache
-E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Debug\netcoreapp3.1\Reversi_CL.AssemblyInfo.cs
-E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Debug\netcoreapp3.1\Reversi_CL.csproj.CoreCompileInputs.cache
 E:\Reversi-Server\ReversiMvcApp\Reversi_CL\bin\Debug\netcoreapp3.1\Reversi_CL.deps.json
 E:\Reversi-Server\ReversiMvcApp\Reversi_CL\bin\Debug\netcoreapp3.1\Reversi_CL.dll
 E:\Reversi-Server\ReversiMvcApp\Reversi_CL\bin\Debug\netcoreapp3.1\Reversi_CL.pdb
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Debug\netcoreapp3.1\Reversi_CL.AssemblyInfoInputs.cache
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Debug\netcoreapp3.1\Reversi_CL.AssemblyInfo.cs
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Debug\netcoreapp3.1\Reversi_CL.csproj.CoreCompileInputs.cache
 E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Debug\netcoreapp3.1\Reversi_CL.dll
 E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Debug\netcoreapp3.1\Reversi_CL.pdb
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Debug\netcoreapp3.1\Reversi_CL.csprojAssemblyReference.cache

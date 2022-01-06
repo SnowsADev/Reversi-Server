@@ -1,18 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Reversi_CL.Models;
 using ReversiMvcApp.Data.ReversiDbContext;
+using ReversiMvcApp.Data.ReversiDbIdentityContext;
 using ReversiMvcApp.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Controllers
 {
+    [Authorize]
     public class SpelersController : Controller
     {
-        private readonly ReversiDbContext _context;
+        private readonly ReversiDbIdentityContext _context;
 
-        public SpelersController(ReversiDbContext context)
+        public SpelersController(ReversiDbIdentityContext context)
         {
             _context = context;
         }
@@ -20,7 +23,7 @@ namespace ReversiMvcApp.Controllers
         // GET: Spelers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Speler.ToListAsync());
+            return View(await _context.Spelers.ToListAsync());
         }
 
         // GET: Spelers/Details/5
@@ -31,7 +34,7 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            var speler = await _context.Speler
+            var speler = await _context.Spelers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (speler == null)
             {
@@ -71,7 +74,7 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            var speler = await _context.Speler.FindAsync(id);
+            var speler = await _context.Spelers.FindAsync(id);
             if (speler == null)
             {
                 return NotFound();
@@ -122,7 +125,7 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            var speler = await _context.Speler
+            var speler = await _context.Spelers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (speler == null)
             {
@@ -137,15 +140,15 @@ namespace ReversiMvcApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var speler = await _context.Speler.FindAsync(id);
-            _context.Speler.Remove(speler);
+            var speler = await _context.Spelers.FindAsync(id);
+            _context.Spelers.Remove(speler);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool SpelerExists(string id)
         {
-            return _context.Speler.Any(e => e.Id == id);
+            return _context.Spelers.Any(e => e.Id == id);
         }
     }
 }

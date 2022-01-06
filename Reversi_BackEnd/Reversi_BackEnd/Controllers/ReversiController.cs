@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Reversi_BackEnd.Helpers;
-using Reversi_BackEnd.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Reversi_CL.Helpers;
 using Reversi_CL.Models;
+using System.Text.Json;
 
 namespace Reversi_BackEnd.Controllers
 {
@@ -19,8 +13,8 @@ namespace Reversi_BackEnd.Controllers
         private readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions 
             { 
                 Converters = 
-                { 
-                    new KleurMultiArrayConverter() 
+                {
+                    new KleurMultiArrayJsonConverter()
                 } 
             };
         
