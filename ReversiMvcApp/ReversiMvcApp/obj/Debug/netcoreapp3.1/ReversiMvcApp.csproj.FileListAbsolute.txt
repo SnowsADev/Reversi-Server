@@ -466,7 +466,6 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\View
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spelers\Index.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Create.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Delete.cshtml.g.cs
-E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Details.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Edit.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Index.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\_ViewImports.cshtml.g.cs
@@ -478,3 +477,4 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvc
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.pdb
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.genruntimeconfig.cache
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Details.cshtml.g.cs

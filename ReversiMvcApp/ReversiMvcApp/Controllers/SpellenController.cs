@@ -27,7 +27,11 @@ namespace ReversiMvcApp.Controllers
         // GET: Spellen
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Spellen.ToListAsync());
+            var Spellen = await _context.Spellen
+                .Include(spel => spel.Spelers)
+                .ToListAsync();
+
+            return View(Spellen);
         }
 
         // GET: Spellen/Details/5
