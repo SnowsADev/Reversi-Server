@@ -3,9 +3,16 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    bool bSpelerIsInSpel = (bool)ViewData["bSpelerInSpel"];
 }
 
 <h1>Overicht openstaande spellen</h1>
+
+@if (bSpelerIsInSpel)
+{
+    <h4 class="text-danger">U zit momenteel nog in een spel. Maak eerst uw laatste spel af voor dat u een nieuw spel kan beginnen.</h4>
+}
 
 <table class="table">
     <thead>
@@ -20,20 +27,37 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Spelers.FirstOrDefault().Naam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Omschrijving)
-            </td>
-            <td>
-                <a class="btn btn-primary text-light" asp-action="Details" asp-route-id="@item.ID">Doe mee!</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Spelers.FirstOrDefault().Naam)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Omschrijving)
+                </td>
+                <td>
+                    @if (bSpelerIsInSpel)
+                    {
+                        <a class="btn btn-primary text-light disabled" asp-action="Details" asp-route-id="@item.ID">Doe mee!</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary text-light" asp-action="Details" asp-route-id="@item.ID">Doe mee!</a>
+                    }
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
+@if (bSpelerIsInSpel)
+{
+<a class="btn btn-primary disabled"  asp-area="" asp-action="Create">Begin nieuw spel</a>
+}
+else
+{
 <a class="btn btn-primary" asp-area="" asp-action="Create">Begin nieuw spel</a>
+}
+

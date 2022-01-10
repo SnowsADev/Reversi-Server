@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Reversi_CL.Models
 {
@@ -12,10 +14,11 @@ namespace Reversi_CL.Models
         public Kleur AandeBeurt { get; set; }
         public string Omschrijving { get; set; }
         public string Token { get; set; }
-        public ICollection<Speler> Spelers { get; set; }
-        //public Kleur[] multiArray;
         [Column(TypeName = "nvarchar(255)")]
         public Kleur[,] Bord { get; set; }
+
+        //Relations
+        public ICollection<Speler> Spelers { get; set; }
 
 
         public Spel()
@@ -257,5 +260,6 @@ namespace Reversi_CL.Models
 
             return zetMogelijk;
         }
+
     }
 }

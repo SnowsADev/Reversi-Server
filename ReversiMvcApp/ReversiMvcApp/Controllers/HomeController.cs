@@ -26,6 +26,7 @@ namespace ReversiMvcApp.Controllers
             //var currentUserID = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
             //Debug.WriteLine(currentUserID);
 
+
             return View();
         }
 

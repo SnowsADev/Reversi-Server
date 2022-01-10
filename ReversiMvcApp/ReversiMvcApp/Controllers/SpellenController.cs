@@ -9,6 +9,8 @@ using ReversiMvcApp.Data.ReversiDbContext;
 using Reversi_CL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Diagnostics;
+using System.Security.Claims;
 
 namespace ReversiMvcApp.Controllers
 {
@@ -17,16 +19,42 @@ namespace ReversiMvcApp.Controllers
     {
         private readonly ReversiDbContext _context;
         private readonly UserManager<Speler> _userManager;
-
+        
         public SpellenController(ReversiDbContext context, UserManager<Speler> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
+        private bool SpelerIsInSpel()
+        {
+            ClaimsPrincipal currentUser = this.User;
+            string currentUserId = _userManager.GetUserId(currentUser);
+
+            // Checken of de speler niet al in een spel zit.
+            List<Spel> spellen = _context.Spellen
+                .AsNoTracking()
+                .Include(spel => spel.Spelers)
+                .ToList();
+
+            foreach (Spel aangemaaktSpel in spellen)
+            {
+                foreach (Speler spelersVanSpel in aangemaaktSpel.Spelers)
+                {
+                    if (spelersVanSpel.Id.Equals(currentUserId))
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
         // GET: Spellen
         public async Task<IActionResult> Index()
         {
+            bool bSpelerInSpel = SpelerIsInSpel();
+            ViewData["bSpelerInSpel"] = bSpelerInSpel;
+
             var Spellen = await _context.Spellen
                 .Include(spel => spel.Spelers)
                 .ToListAsync();
@@ -55,6 +83,11 @@ namespace ReversiMvcApp.Controllers
         // GET: Spellen/Create
         public IActionResult Create()
         {
+            if (SpelerIsInSpel())
+            {
+                RedirectToAction(nameof(Index));
+            }
+
             return View();
         }
 
@@ -69,7 +102,20 @@ namespace ReversiMvcApp.Controllers
             {
                 Speler speler = await _userManager.GetUserAsync(User);
 
-                if (speler == null) return RedirectToAction(nameof(Index));
+                // Checken of de speler niet al in een spel zit.
+                List<Spel> spellen = await _context.Spellen
+                    .AsNoTracking()
+                    .Include(spel => spel.Spelers)
+                    .ToListAsync();
+
+                foreach (Spel aangemaaktSpel in spellen)
+                {
+                    foreach (Speler spelersVanSpel in aangemaaktSpel.Spelers)
+                    {
+                        if (spelersVanSpel.Equals(speler))
+                            return View(spel);
+                    }
+                }
 
                 spel.Spelers = new List<Speler>() { speler };
                 

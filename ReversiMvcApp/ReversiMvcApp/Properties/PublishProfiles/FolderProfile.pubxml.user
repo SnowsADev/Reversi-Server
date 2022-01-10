@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\publish\</_PublishTargetUrl>
+    <History>True|2022-01-07T13:16:23.9398749Z;True|2022-01-07T14:15:34.8244094+01:00;</History>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <EFMigrations Include="ReversiMvcApp.Data.ReversiDbContext.ReversiDbContext">
+      <Value>Server=%28localdb%29\mssqllocaldb%3bDatabase=reversiDb%3bTrusted_Connection=True%3bMultipleActiveResultSets=true</Value>
+    </EFMigrations>
+    <EFMigrations Include="ReversiMvcApp.Data.ReversiDbIdentityContext.ReversiDbIdentityContext">
+      <Value>Server=%28localdb%29\mssqllocaldb%3bDatabase=reversiDb%3bTrusted_Connection=True%3bMultipleActiveResultSets=true</Value>
+    </EFMigrations>
+  </ItemGroup>
+</Project>
