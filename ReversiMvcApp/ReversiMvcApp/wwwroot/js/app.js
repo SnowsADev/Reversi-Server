@@ -116,10 +116,10 @@ var popup_widget = function ($) {
 
     if (type === "succes") {
       elMainContainer.setAttribute("class", "popup popup--state-success");
-      iconPath = "/src/img/Succes_Icon.png";
+      iconPath = "/images/Succes_Icon.png";
     } else {
       elMainContainer.setAttribute("class", "popup popup--state-warning");
-      iconPath = "/src/img/Error_Icon.png";
+      iconPath = "/images/Error_Icon.png";
     }
 
     var elHeader = document.createElement("header");

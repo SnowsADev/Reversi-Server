@@ -5,8 +5,24 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Scripts {
+    <script type="text/javascript" src="~/js/app.js"></script>
+
+    <script type="text/javascript">
+        var succes = "";
+        var message = "Mike wil deelnemen aan jouw spel. Geef akkoord.";
+        //popup_widget.show(succes, message);
+        //popup_widget.show(succes, message);
+
+        $(document).ready(function () {
+            SPA.feedbackModule.toonSuccesBericht();
+            SPA.feedbackModule.toonErrorBericht("", "Dit is een waarschuwing!");
+        });
+
+    </script>
+
+}
+
 <h1>@Model.Omschrijving</h1>
 
-<div>
-    
-</div>
+

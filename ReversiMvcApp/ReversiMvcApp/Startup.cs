@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Reversi_CL.Models;
 using ReversiMvcApp.Data;
@@ -14,6 +16,7 @@ using ReversiMvcApp.Data.ReversiDbIdentityContext;
 using ReversiMvcApp.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -52,6 +55,17 @@ namespace ReversiMvcApp
                 .AddRazorRuntimeCompilation();
 
             services.AddRazorPages();
+
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Policy_EnableJQuery",
+                    builder =>
+                    {
+                        builder.WithOrigins("https://ajax.googleapis.com"
+                            );
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +86,7 @@ namespace ReversiMvcApp
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();

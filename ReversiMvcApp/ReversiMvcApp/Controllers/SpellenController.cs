@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Cors;
 
 namespace ReversiMvcApp.Controllers
 {
@@ -63,6 +64,7 @@ namespace ReversiMvcApp.Controllers
         }
 
         // GET: Spellen/Details/5
+        [EnableCors("Policy_EnableJQuery")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
