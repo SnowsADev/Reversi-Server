@@ -91,13 +91,12 @@ SPA.feedbackModule = function ($) {
     return true;
   };
 
-  var toonSuccesBericht = function toonSuccesBericht() {
-    var message = "Mike wil deelnemen aan jouw spel. Geef akkoord.";
+  var toonSuccesBericht = function toonSuccesBericht(message) {
     popup_widget.show("succes", message);
   };
 
-  var toonErrorBericht = function toonErrorBericht(type, error) {
-    popup_widget.show(type, error);
+  var toonErrorBericht = function toonErrorBericht(message) {
+    popup_widget.show("error", message);
   };
 
   return {

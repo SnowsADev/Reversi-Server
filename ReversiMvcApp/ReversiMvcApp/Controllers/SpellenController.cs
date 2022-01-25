@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ReversiMvcApp.Controllers
 {
@@ -60,6 +61,10 @@ namespace ReversiMvcApp.Controllers
                 .Include(spel => spel.Spelers)
                 .ToListAsync();
 
+            Speler speler = await _userManager.GetUserAsync(User);
+            ViewData["UserID"] = speler.Id;
+            ViewData["UserNaam"] = speler.Naam;
+
             return View(Spellen);
         }
 
@@ -72,12 +77,15 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            var spel = await _context.Spellen
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var spel = await _context.Spellen.FirstOrDefaultAsync(m => m.ID == id);
+
             if (spel == null)
             {
                 return NotFound();
             }
+
+            Speler speler = await _userManager.GetUserAsync(User);
+            ViewData["UserID"] = speler.Id;
 
             return View(spel);
         }
@@ -123,7 +131,7 @@ namespace ReversiMvcApp.Controllers
                 
                 _context.Add(spel);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = speler.Id } );
             }
             return View(spel);
         }

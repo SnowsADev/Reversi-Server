@@ -7,6 +7,45 @@
     bool bSpelerIsInSpel = (bool)ViewData["bSpelerInSpel"];
 }
 
+@section Scripts {
+    <script type="text/javascript" src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript" src="~/js/app.js"></script>
+
+
+    <script type="text/javascript">
+        "use strict";
+
+        var connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();
+
+        connection.on("ReceiveErrorPopup", function (message) {
+            SPA.feedbackModule.toonErrorBericht(message);
+        });
+
+        connection.start().then(function () {
+
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+
+
+        document.getElementById("TblSpellen").addEventListener("click", function (event) {
+            const isButton = event.target.className.includes("btn");
+            if (!isButton) {
+                return;
+            }
+
+            connection.invoke("SendJoinRequest", event.target.dataset.id, "@ViewData["UserNaam"]").catch(function (err) {
+                return console.error(err.toString());
+            });
+
+            event.preventDefault();
+        });
+
+    </script>
+
+}
+
 <h1>Overicht openstaande spellen</h1>
 
 @if (bSpelerIsInSpel)
@@ -14,7 +53,7 @@
     <h4 class="text-danger">U zit momenteel nog in een spel. Maak eerst uw laatste spel af voor dat u een nieuw spel kan beginnen.</h4>
 }
 
-<table class="table">
+<table id="TblSpellen" class="table">
     <thead>
         <tr>
             <th>
@@ -45,11 +84,11 @@
                 <td>
                     @if (bSpelerIsInSpel)
                     {
-                        <a class="btn btn-primary text-light disabled" asp-action="Details" asp-route-id="@item.ID">Doe mee!</a>
+                        <a class="btn btn-primary text-light disabled" @*asp-action="Details" asp-route-id="@item.ID"*@>Doe mee!</a>
                     }
                     else
                     {
-                        <a class="btn btn-primary text-light" asp-action="Details" asp-route-id="@item.ID">Doe mee!</a>
+                        <a class="btn btn-primary text-light" data-id="@item.ID" @*asp-action="Details" asp-route-id="@item.ID"*@>Doe mee!</a>
                     }
 
                 </td>
@@ -60,10 +99,10 @@
 
 @if (bSpelerIsInSpel)
 {
-<a class="btn btn-primary disabled"  asp-area="" asp-action="Create">Begin nieuw spel</a>
+    <a class="btn btn-primary disabled" asp-area="" asp-action="Create">Begin nieuw spel</a>
 }
 else
 {
-<a class="btn btn-primary" asp-area="" asp-action="Create">Begin nieuw spel</a>
+    <a class="btn btn-primary" asp-area="" asp-action="Create">Begin nieuw spel</a>
 }
 
