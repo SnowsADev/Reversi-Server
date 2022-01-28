@@ -29,6 +29,13 @@
             return console.error(err.toString());
         });
 
+        $(document).ready(function () {
+            SPA.Data.initModule("production", "https://localhost:44368/api/spel");
+
+            SPA.Reversi.show();
+        });
+
+
 
     </script>
 

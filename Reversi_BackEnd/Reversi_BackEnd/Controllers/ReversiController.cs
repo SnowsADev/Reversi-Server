@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Reversi_CL.Data.ReversiDbContext;
 using Reversi_CL.Helpers;
 using Reversi_CL.Models;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Reversi_BackEnd.Controllers
 {
@@ -9,7 +14,6 @@ namespace Reversi_BackEnd.Controllers
     [ApiController]
     public class ReversiController : ControllerBase
     {
-        private Spel Spel { get; set; }
         private readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions 
             { 
                 Converters = 
@@ -18,10 +22,19 @@ namespace Reversi_BackEnd.Controllers
                 } 
             };
         
+        private readonly ReversiDbContext _context;
 
-        public ReversiController()
+        public ReversiController(ReversiDbContext context)
         {
-            this.Spel = new Spel();
+            _context = context;
+            
+        }
+
+        private Spel GetSpelByToken(string spelToken)
+        {
+            return  _context.Spellen
+                .Include(spel => spel.Spelers)
+                .FirstOrDefault(x => x.ID == spelToken);
         }
 
         // api/Spel/<Token> - GET
@@ -31,10 +44,17 @@ namespace Reversi_BackEnd.Controllers
         // - Wie er aan de beurt is
         // - Status van het spel (bijv. De winnaar, opgeven door)
         [HttpGet("/Api/Spel")]
-        public ActionResult GetSpel()
+        public IActionResult GetSpel([FromQuery] string spelToken)
         {
-            //var tempVariable = spelToken;
-            string json = JsonSerializer.Serialize(Spel, serializerOptions);
+            Spel spel = GetSpelByToken(spelToken);
+
+            if (spel == null)
+            {
+                return NotFound();
+            }
+
+            string json = JsonSerializer.Serialize(spel, serializerOptions);
+            
             return Ok(json);
         }
 
@@ -42,28 +62,37 @@ namespace Reversi_BackEnd.Controllers
         // Opvragen wie er aan de beurt is.
 
         [HttpGet("/Api/Spel/Beurt")]
-        public ActionResult<Kleur> GetAandeBeurt([FromRoute] string spelToken)
+        public IActionResult GetAandeBeurt([FromRoute] string spelToken)
         {
-            var tempVariable = spelToken;
-            return Ok((int)Spel.AandeBeurt);
+            
+            Spel spel = GetSpelByToken(spelToken);
+
+            if (spel == null)
+            {
+                return BadRequest();
+            }
+
+
+            return Ok(spel.AandeBeurt);
         }
 
         //Api/Spel/Zet - PUT
         // Stuurt het veld naar de server waar een fiche wordt geplaatst. Het token van
         // het spel en speler moeten meegegeven worden. Ook passen moet mogelijk zijn.
         [HttpPut("/Api/Spel/Zet")]
-        public ActionResult MaakZet([FromBody] int rijZet, int kolomZet, string spelToken, string spelerToken)
+        public IActionResult MaakZet([FromBody] int rijZet, int kolomZet, string spelToken, string spelerToken)
         {
-            var tempVariable1 = spelToken;
-            var tempVariable2 = spelerToken;
-            if (Spel.DoeZet(rijZet, kolomZet))
+            Spel spel = GetSpelByToken(spelToken);
+
+            if (spel.DoeZet(rijZet, kolomZet))
             {
-                return GetSpel();
+                return GetSpel(spelToken);
             }
-            return Ok("Onmogelijke Zet");
+
+            return BadRequest("Onmogelijke Zet");
         }
 
-
+        //ToDo
         // Api/Spel/Opgeven - PUT
         // Hiermee geeft de speler op
         [HttpPut("Api/Spel/Opgeven")]

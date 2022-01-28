@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Reversi_CL.Data.ReversiDbContext;
+using Reversi_CL.Data.ReversiDbIdentityContext;
 using Reversi_CL.Models;
-using ReversiMvcApp.Data.ReversiDbContext;
-using ReversiMvcApp.Data.ReversiDbIdentityContext;
 using ReversiMvcApp.SignalR;
 
 namespace ReversiMvcApp
@@ -53,7 +53,10 @@ namespace ReversiMvcApp
                 options.AddPolicy("Policy_EnableJQuery",
                     builder =>
                     {
-                        builder.WithOrigins("https://ajax.googleapis.com"
+                        builder.WithOrigins(
+                                "https://ajax.googleapis.com",
+                                "https://localhost",
+                                "https://127.0.0.1"
                             );
                     });
             });

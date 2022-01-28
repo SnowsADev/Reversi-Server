@@ -4,7 +4,7 @@ namespace Reversi_CL.Models
 {
     public interface ISpel
     {
-        int ID { get; set; }
+        string ID { get; set; }
         string Omschrijving { get; set; }
         string Token { get; set; }
         ICollection<Speler> Spelers { get; set; }

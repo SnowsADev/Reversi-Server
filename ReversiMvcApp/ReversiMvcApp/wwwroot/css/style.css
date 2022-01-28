@@ -1,3 +1,50 @@
+#bord__wrapper
+{
+    display: block;
+    margin: 1rem auto 1rem auto;
+    width: 500px;
+    height: 500px;
+    padding: 30px;
+    background-color: rgb(107, 61, 12);
+    border-color: black;
+    border-radius: 25px;
+    
+}
+
+#bord__table 
+{
+background-color: green;
+height: 100%;
+}
+
+#bord__table td, tr {
+    border-color: black;
+    padding: 3px;
+}
+
+.bord__steen
+{
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+}
+
+.bord__steen--zwart
+{
+    background-color: black;
+}
+
+.bord__steen--wit
+{
+    background-color: white;
+}
+
+
+
+
+
+
+
 .popup {
     margin:auto;
     width: 90%;

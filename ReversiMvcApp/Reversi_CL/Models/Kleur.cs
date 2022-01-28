@@ -7,6 +7,4 @@ using System.Threading.Tasks;
 namespace Reversi_CL.Models
 {
     public enum Kleur { Geen, Wit, Zwart };
-
-
 }

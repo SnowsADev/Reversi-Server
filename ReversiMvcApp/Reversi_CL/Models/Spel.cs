@@ -9,8 +9,9 @@ namespace Reversi_CL.Models
 
     public class Spel : ISpel
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public int ID { get; set; }
+        public string ID { get; set; }
         public Kleur AandeBeurt { get; set; }
         public string Omschrijving { get; set; }
         public string Token { get; set; }
@@ -24,7 +25,7 @@ namespace Reversi_CL.Models
         public Spel()
         {
             //this.multiArray = new Kleur[8];
-            
+
             this.Bord = new Kleur[8, 8];
             this.Bord[3, 3] = Kleur.Wit;
             this.Bord[3, 4] = Kleur.Zwart;
@@ -87,14 +88,17 @@ namespace Reversi_CL.Models
                 int eindCheckrijPositie = rijZet + 1;
                 int eindCheckKolomPositie = kolomZet + 1;
 
-                //check if starting Iterations And end Iterations arent < 0 OR bigger than board size
-                if (startCheckKolomPositie < 0)
+                //check if starting Iterations And end Iterations arent < 0 OR bigger than board size.
+                if (startCheckKolomPositie < 0) // Column left is not possible
                     startCheckKolomPositie = 0;
-                if (startCheckRijPositie < 0)
+
+                if (startCheckRijPositie < 0) // Row top is not possible
                     startCheckRijPositie = 0;
-                if (eindCheckrijPositie >= Bord.GetLength(0))
+
+                if (eindCheckrijPositie >= Bord.GetLength(0)) // Row Bottom is not possible
                     eindCheckrijPositie = rijZet;
-                if (eindCheckKolomPositie >= Bord.GetLength(1))
+
+                if (eindCheckKolomPositie >= Bord.GetLength(1)) // Column Right is not possible
                     eindCheckKolomPositie = kolomZet;
 
                 for (int rij = startCheckRijPositie; rij <= eindCheckrijPositie; rij++)
@@ -103,9 +107,9 @@ namespace Reversi_CL.Models
                     {
                         Kleur nietAandeBeurt = NietAandeBeurt();
                         //If position has a different colour around it
-                        if (Bord[rij, kolom] == NietAandeBeurt())
+                        if (Bord[rij, kolom] == nietAandeBeurt)
                         {
-                            //Rij + Column the opposite colour that is found above
+                            //Row + Column the opposite colour that is found above
                             int rijVerschil = (rij - rijZet); //1
                             int kolomVerschil = (kolom - kolomZet); //0
                             int rPos = rij;
@@ -131,6 +135,7 @@ namespace Reversi_CL.Models
                         }
                     }
                 }
+
                 this.AandeBeurt = NietAandeBeurt();
             }
             return zetGedaan;
@@ -194,6 +199,7 @@ namespace Reversi_CL.Models
             return false;
         }
 
+        // MovePossible()
         public bool ZetMogelijk(int rijZet, int kolomZet)
         {
             bool zetMogelijk = false;

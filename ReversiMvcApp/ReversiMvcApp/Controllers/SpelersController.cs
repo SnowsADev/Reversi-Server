@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Reversi_CL.Data.ReversiDbIdentityContext;
 using Reversi_CL.Models;
-using ReversiMvcApp.Data.ReversiDbContext;
-using ReversiMvcApp.Data.ReversiDbIdentityContext;
-using ReversiMvcApp.Models;
 using System.Linq;
 using System.Threading.Tasks;
 

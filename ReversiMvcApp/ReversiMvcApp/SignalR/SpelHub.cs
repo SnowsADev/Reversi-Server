@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Reversi_CL.Models;
-using ReversiMvcApp.Data.ReversiDbContext;
-using ReversiMvcApp.Data.ReversiDbIdentityContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Reversi_CL.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Reversi_CL.Data.ReversiDbContext;
 
 namespace ReversiMvcApp.SignalR
 {
@@ -30,7 +29,7 @@ namespace ReversiMvcApp.SignalR
         {
             Spel spel = _context.Spellen
                 .Include(spel => spel.Spelers)
-                .FirstOrDefault(x => x.ID == int.Parse(spelID));
+                .FirstOrDefault(x => x.ID == spelID);
 
             // Fout melden als er geen spel is gevonden.
             if (spel == null)
@@ -51,6 +50,8 @@ namespace ReversiMvcApp.SignalR
             await SendErrorPopup(TargetID, "Er is iets fout gegaan. Probeer het later opnieuw.");
             await Clients.User(TargetID).SendAsync("ReceiveJoinRequest", message);
         }
+
+
 
         public async Task SendErrorPopup(string targetUser, string message)
         {

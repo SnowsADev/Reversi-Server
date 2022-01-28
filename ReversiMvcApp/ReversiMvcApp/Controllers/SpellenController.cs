@@ -1,18 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Reversi_CL.Data.ReversiDbContext;
+using Reversi_CL.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ReversiMvcApp.Data.ReversiDbContext;
-using Reversi_CL.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
-using System.Diagnostics;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.SignalR;
+using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Controllers
 {
@@ -70,9 +66,9 @@ namespace ReversiMvcApp.Controllers
 
         // GET: Spellen/Details/5
         [EnableCors("Policy_EnableJQuery")]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            if (id.Trim() == "" || id == null)
             {
                 return NotFound();
             }
@@ -137,14 +133,15 @@ namespace ReversiMvcApp.Controllers
         }
 
         // GET: Spellen/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            if (id.Trim() == "" || id == null)
             {
                 return NotFound();
             }
 
             var spel = await _context.Spellen.FindAsync(id);
+
             if (spel == null)
             {
                 return NotFound();
@@ -157,7 +154,7 @@ namespace ReversiMvcApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AandeBeurt,ID,Omschrijving,Token")] Spel spel)
+        public async Task<IActionResult> Edit(string id, [Bind("AandeBeurt,ID,Omschrijving,Token")] Spel spel)
         {
             if (id != spel.ID)
             {
@@ -188,9 +185,9 @@ namespace ReversiMvcApp.Controllers
         }
 
         // GET: Spellen/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
+            if (id.Trim() == "" || id == null)
             {
                 return NotFound();
             }
@@ -208,7 +205,7 @@ namespace ReversiMvcApp.Controllers
         // POST: Spellen/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var spel = await _context.Spellen.FindAsync(id);
 
@@ -217,7 +214,7 @@ namespace ReversiMvcApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SpelExists(int id)
+        private bool SpelExists(string id)
         {
             return _context.Spellen.Any(e => e.ID == id);
         }

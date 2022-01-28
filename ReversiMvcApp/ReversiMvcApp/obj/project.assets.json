@@ -2769,7 +2769,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.22"
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.22",
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.1.22"
         },
         "compile": {
           "bin/placeholder/Reversi_CL.dll": {}
@@ -8910,6 +8911,7 @@
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 3.1.22",
       "Microsoft.AspNetCore.Identity.UI >= 3.1.22",
       "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation >= 3.1.22",
+      "Microsoft.EntityFrameworkCore.Design >= 3.1.22",
       "Microsoft.EntityFrameworkCore.SqlServer >= 3.1.22",
       "Microsoft.EntityFrameworkCore.Tools >= 3.1.22",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 3.1.5",
@@ -8982,6 +8984,12 @@
             "version": "[3.1.22, )"
           },
           "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": {
+            "target": "Package",
+            "version": "[3.1.22, )"
+          },
+          "Microsoft.EntityFrameworkCore.Design": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "suppressParent": "All",
             "target": "Package",
             "version": "[3.1.22, )"
           },

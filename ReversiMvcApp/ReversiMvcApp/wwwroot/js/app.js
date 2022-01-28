@@ -26,28 +26,48 @@ var SPA = function ($) {
 
 SPA.Data = function ($) {
   var _configMap = {
-    endpoint: "../api/game.json",
+    endpoint: "/api/spel",
     environment: ""
   }; //initialize function
 
   var initModule = function initModule(environment) {
+    var endpoint = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "/api/spel";
     _configMap.environment = environment;
+    _configMap.endpoint = endpoint;
     return true;
   };
 
   var getSpellen = function getSpellen() {
     var result;
 
-    if (environment === "production") {
-      result = $.ajax({
-        url: endpoint,
-        succes: function succes() {
-          return data;
+    if (_configMap.environment === "production") {
+      $.ajax({
+        dataType: "json",
+        contentType: "application/json",
+        crossDomain: true,
+        type: "GET",
+        url: _configMap.endpoint,
+        async: false,
+        success: function success(data) {
+          result = data;
         },
         error: function error() {
-          SPA.feedbackModule.toonErrorBericht("error", "Failed request to server.");
+          SPA.feedbackModule.toonErrorBericht("Failed request to server.");
+        }
+      });
+    } else {
+      $.ajax({
+        dataType: "json",
+        contentType: "application/json",
+        type: "GET",
+        url: "api/game.json",
+        async: false,
+        success: function success(data) {
+          result = data;
         },
-        type: "POST"
+        error: function error() {
+          SPA.feedbackModule.toonErrorBericht("Failed request to server.");
+        }
       });
     }
 
@@ -73,14 +93,83 @@ SPA.Model = function ($) {
 }(jQuery);
 
 SPA.Reversi = function ($) {
-  var _configMap = {}; //initialize function
+  var _configMap = {
+    _spel: null
+  };
+
+  var getGameState = function getGameState() {
+    _configMap._spel = SPA.Data.getSpellen();
+  };
+
+  var show = function show($) {
+    getGameState();
+
+    if (_configMap._spel.Bord === undefined) {
+      SPA.feedbackModule.toonErrorBericht("Failed request to server.");
+      return;
+    }
+
+    var Bord = _configMap._spel.Bord;
+    var bordGrootte = Bord.length; //Wrapper
+
+    var elBord = document.createElement("div");
+    elBord.id = "bord__wrapper"; //Table
+
+    var elTable = document.createElement("table");
+    elTable.id = "bord__table";
+    elTable.classList = ["table table-bordered"];
+    var elTableBody = document.createElement("tbody");
+    elTable.appendChild(elTableBody);
+    var elBordRow;
+    var elBordDataCell;
+
+    for (var i = 0; i < bordGrootte; i++) {
+      elBordRow = document.createElement("tr");
+      elBordRow.id = i;
+      elBordRow.setAttribute("scope", "row");
+
+      for (var j = 0; j < bordGrootte; j++) {
+        elBordDataCell = document.createElement("td");
+        elBordDataCell.id = String.fromCharCode(j + 65) + j; // Stenen toevoegen
+
+        if (Bord[i][j] > 0) {
+          var elSteen = document.createElement("div");
+          elSteen.className = "bord__steen";
+
+          switch (Bord[i][j]) {
+            case 1:
+              elSteen.classList.add("bord__steen--wit");
+              break;
+
+            case 2:
+              elSteen.classList.add("bord__steen--zwart");
+              break;
+
+            default:
+              break;
+          }
+
+          elBordDataCell.appendChild(elSteen);
+        }
+
+        elBordRow.appendChild(elBordDataCell);
+      }
+
+      elTableBody.appendChild(elBordRow);
+    }
+
+    elBord.appendChild(elTable);
+    document.body.appendChild(elBord);
+  }; //initialize function
+
 
   var initModule = function initModule() {
     return true;
   };
 
   return {
-    initModule: initModule
+    initModule: initModule,
+    show: show
   };
 }(jQuery);
 
@@ -95,8 +184,8 @@ SPA.feedbackModule = function ($) {
     popup_widget.show("succes", message);
   };
 
-  var toonErrorBericht = function toonErrorBericht(message) {
-    popup_widget.show("error", message);
+  var toonErrorBericht = function toonErrorBericht(error) {
+    popup_widget.show("error", error);
   };
 
   return {
