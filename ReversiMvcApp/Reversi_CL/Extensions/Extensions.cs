@@ -14,4 +14,23 @@ namespace Reversi_CL.Extensions
                 _ => string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1))
             };
     }
+
+    public static class IntegerExensions
+    {
+        public static int LimitToRange(this int value, int inclusiveMinimum, int inclusiveMaximum)
+        {
+            if (value < inclusiveMinimum)
+            {
+                return inclusiveMinimum;
+            }
+
+            if (value > inclusiveMaximum)
+            {
+                return inclusiveMaximum;
+            }
+
+            return value;
+        }
+
+    }
 }

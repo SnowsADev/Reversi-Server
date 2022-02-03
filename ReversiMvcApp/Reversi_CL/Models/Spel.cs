@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Reversi_CL.Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Reversi_CL.Models
@@ -116,19 +118,23 @@ namespace Reversi_CL.Models
                             int kPos = kolom;
 
                             //kPos & rPos is the starting position
+                            // Tel door tot dat rPos en kPos buiten het bord vallen OF 
                             while (rPos >= 0 && rPos < Bord.GetLength(0) && kPos >= 0 && kPos < Bord.GetLength(1))
                             {
 
                                 if (Bord[rPos, kPos] == Kleur.Geen)
+                                {
                                     break;
+                                }
 
                                 //if discs are surrounded by this move
                                 if (Bord[rPos, kPos] == AandeBeurt)
                                 {
+                                    //Alle stenen ertussen omzetten naar de kleur van degene die de zet heeft gemaakt.
+                                    DraaiStenen(rij, kolom, rPos, kPos);
                                     zetGedaan = true;
                                     break;
                                 }
-                                Bord[rPos, kPos] = AandeBeurt;
                                 rPos += rijVerschil;
                                 kPos += kolomVerschil;
                             }
@@ -139,6 +145,34 @@ namespace Reversi_CL.Models
                 this.AandeBeurt = NietAandeBeurt();
             }
             return zetGedaan;
+        }
+
+        private void DraaiStenen(int beginX, int beginY, int eindX, int eindY)
+        {
+            int rijVerschil = (eindX - beginX).LimitToRange(-1, 1); //1
+            int kolomVerschil = (eindY - beginY).LimitToRange(-1, 1); //0
+
+            int currentX = beginX;
+            int currentY = beginY;
+            
+            while (Bord[currentX, currentY] != AandeBeurt)
+            {
+                Bord[currentX, currentY] = AandeBeurt;
+
+                currentX += rijVerschil;
+                currentY += kolomVerschil;
+            }
+        }
+
+
+        public void ResetBord()
+        {
+            this.Bord = new Kleur[8, 8];
+            this.Bord[3, 3] = Kleur.Wit;
+            this.Bord[3, 4] = Kleur.Zwart;
+            this.Bord[4, 3] = Kleur.Zwart;
+            this.Bord[4, 4] = Kleur.Wit;
+            this.AandeBeurt = Kleur.Zwart;
         }
 
         public Kleur OverwegendeKleur()

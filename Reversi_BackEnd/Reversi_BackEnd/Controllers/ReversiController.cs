@@ -76,20 +76,44 @@ namespace Reversi_BackEnd.Controllers
             return Ok(spel.AandeBeurt);
         }
 
+        [HttpPost("/Api/Spel/ResetBord")]
+        public IActionResult ResetBord([FromQuery] string spelToken)
+        {
+            Spel spel = GetSpelByToken(spelToken);
+
+            spel.ResetBord();
+
+            _context.Spellen.Update(spel);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
         //Api/Spel/Zet - PUT
         // Stuurt het veld naar de server waar een fiche wordt geplaatst. Het token van
         // het spel en speler moeten meegegeven worden. Ook passen moet mogelijk zijn.
         [HttpPut("/Api/Spel/Zet")]
-        public IActionResult MaakZet([FromBody] int rijZet, int kolomZet, string spelToken, string spelerToken)
+        public IActionResult MaakZet([FromBody] MaakZetDTO dto)
         {
-            Spel spel = GetSpelByToken(spelToken);
+            Spel spel = GetSpelByToken(dto.SpelToken);
 
-            if (spel.DoeZet(rijZet, kolomZet))
+            if (spel.DoeZet(dto.RijZet, dto.KolomZet))
             {
-                return GetSpel(spelToken);
+                _context.Spellen.Update(spel);
+                _context.SaveChanges();
+
+                return GetSpel(dto.SpelToken);
             }
 
             return BadRequest("Onmogelijke Zet");
+        }
+
+        public class MaakZetDTO
+        {
+            public int RijZet { get; set; }
+            public int KolomZet { get; set; }
+            public string SpelToken { get; set; }
+            public string SpelerToken { get; set; }
         }
 
         //ToDo
