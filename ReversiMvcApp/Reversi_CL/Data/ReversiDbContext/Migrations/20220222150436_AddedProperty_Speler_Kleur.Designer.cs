@@ -5,12 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Reversi_CL.Data.ReversiDbContext;
 
 namespace Reversi_CL.Data.ReversiDbContext.Migrations
 {
     [DbContext(typeof(ReversiDbContext))]
-    [Migration("20220128152231_InitDb")]
-    partial class InitDb
+    [Migration("20220222150436_AddedProperty_Speler_Kleur")]
+    partial class AddedProperty_Speler_Kleur
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -69,6 +70,9 @@ namespace Reversi_CL.Data.ReversiDbContext.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int>("Kleur")
+                        .HasColumnType("int");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -96,6 +100,9 @@ namespace Reversi_CL.Data.ReversiDbContext.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Spel")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("SpelID")
                         .HasColumnType("nvarchar(450)");
 
@@ -107,6 +114,8 @@ namespace Reversi_CL.Data.ReversiDbContext.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Spel");
+
                     b.HasIndex("SpelID");
 
                     b.ToTable("Speler");
@@ -114,9 +123,14 @@ namespace Reversi_CL.Data.ReversiDbContext.Migrations
 
             modelBuilder.Entity("Reversi_CL.Models.Speler", b =>
                 {
+                    b.HasOne("Reversi_CL.Models.Spel", "ActueelSpel")
+                        .WithMany()
+                        .HasForeignKey("Spel");
+
                     b.HasOne("Reversi_CL.Models.Spel", null)
                         .WithMany("Spelers")
-                        .HasForeignKey("SpelID");
+                        .HasForeignKey("SpelID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

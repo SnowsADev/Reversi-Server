@@ -31,8 +31,13 @@ namespace Reversi_CL.Data.ReversiDbContext
 
             modelBuilder
                 .Entity<Spel>()
-                .Property(e => e.Bord)
+                .Property(spel => spel.Bord)
                 .HasConversion(bordConverter);
+
+            modelBuilder.Entity<Spel>()
+                .HasMany(spel => spel.Spelers)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         

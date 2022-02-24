@@ -2,8 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Reversi_CL.Models
@@ -15,6 +18,13 @@ namespace Reversi_CL.Models
         public int AantalVerloren { get; set; }
         public int AantalGelijk { get; set; }
 
+        public Kleur Kleur { get; set; } = Kleur.Geen; 
+
+        //relations
+        [ForeignKey("Spel")]
+        public Spel ActueelSpel { get; set; }
+
+        
         public Speler() 
         { 
         }
@@ -33,7 +43,10 @@ namespace Reversi_CL.Models
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id);
+            int hash = 17;
+            hash = hash * 23 + Id.GetHashCode();
+
+            return hash;
         }
     }
 }

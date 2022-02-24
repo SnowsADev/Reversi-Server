@@ -22,6 +22,42 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Spel",
+                columns: table => new
+                {
+                    ID = table.Column<string>(nullable: false),
+                    AandeBeurt = table.Column<int>(nullable: false),
+                    Omschrijving = table.Column<string>(nullable: true),
+                    Token = table.Column<string>(nullable: true),
+                    Bord = table.Column<string>(type: "nvarchar(255)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Spel", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<string>(nullable: false),
+                    ClaimType = table.Column<string>(nullable: true),
+                    ClaimValue = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -43,31 +79,24 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
                     Naam = table.Column<string>(nullable: true),
                     AantalGewonnen = table.Column<int>(nullable: false),
                     AantalVerloren = table.Column<int>(nullable: false),
-                    AantalGelijk = table.Column<int>(nullable: false)
+                    AantalGelijk = table.Column<int>(nullable: false),
+                    Spel = table.Column<string>(nullable: true),
+                    SpelID = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        name: "FK_AspNetUsers_Spel_Spel",
+                        column: x => x.Spel,
+                        principalTable: "Spel",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Spel_SpelID",
+                        column: x => x.SpelID,
+                        principalTable: "Spel",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -194,6 +223,16 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_Spel",
+                table: "AspNetUsers",
+                column: "Spel");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_SpelID",
+                table: "AspNetUsers",
+                column: "SpelID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -218,6 +257,9 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Spel");
         }
     }
 }

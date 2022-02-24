@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     bool bSpelerIsInSpel = (bool)ViewData["bSpelerInSpel"];
+    string userId = ViewData["UserID"].ToString();
 }
 
 @section Scripts {
@@ -15,32 +16,55 @@
     <script type="text/javascript">
         "use strict";
 
-        var connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();
+        let connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();
 
         connection.on("ReceiveErrorPopup", function (message) {
             SPA.feedbackModule.toonErrorBericht(message);
         });
 
-        connection.start().then(function () {
+        connection.on("ReceiveJoinRequestResult", function (json) {
+            //console.log('Received Request!');
+            //console.log(obj);
+
+            let data = JSON.parse(json);
+            console.log(data);
+
+            if (data.success === true) {
+                console.log('Success!')
+
+                return $.ajax({
+                    type: "POST",
+                    url: `/Spellen/JoinSpel/${data.spelID}`,
+                    contentType: "application/json; charset=utf-8",
+                    success: function()  { return console.log('123');}
+                    //dataType: "json",
+                });
+            }
+            
+        });
+        connection.start().then(function () { 
 
         }).catch(function (err) {
             return console.error(err.toString());
         });
 
 
-
+        //Send Join Request
         document.getElementById("TblSpellen").addEventListener("click", function (event) {
             const isButton = event.target.className.includes("btn");
+
             if (!isButton) {
                 return;
             }
 
-            connection.invoke("SendJoinRequest", event.target.dataset.id, "@ViewData["UserNaam"]").catch(function (err) {
+            connection.invoke("SendJoinRequest", event.target.dataset.id, "@userId").catch(function (err) {
                 return console.error(err.toString());
             });
 
             event.preventDefault();
         });
+
+
 
     </script>
 
@@ -65,7 +89,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Omschrijving)
             </th>
-            <th></th>
+            <th>
+
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -90,7 +116,6 @@
                     {
                         <a class="btn btn-primary text-light" data-id="@item.ID" @*asp-action="Details" asp-route-id="@item.ID"*@>Doe mee!</a>
                     }
-
                 </td>
             </tr>
         }

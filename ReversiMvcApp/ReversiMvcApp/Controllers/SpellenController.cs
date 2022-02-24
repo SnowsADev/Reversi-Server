@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Reversi_CL.Data.ReversiDbContext;
 using Reversi_CL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 namespace ReversiMvcApp.Controllers
 {
     [Authorize]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public class SpellenController : Controller
     {
         private readonly ReversiDbContext _context;
@@ -73,15 +75,24 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            var spel = await _context.Spellen.FirstOrDefaultAsync(m => m.ID == id);
+            var spel = await _context.Spellen
+                .Include(spel => spel.Spelers)
+                .FirstOrDefaultAsync(m => m.ID == id);
 
             if (spel == null)
             {
                 return NotFound();
             }
 
-            Speler speler = await _userManager.GetUserAsync(User);
-            ViewData["UserID"] = speler.Id;
+            Speler currentSpeler = await _userManager.GetUserAsync(User);
+
+            if (!spel.Spelers.Any(Speler => Speler.Id == currentSpeler.Id))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            
+            ViewData["UserID"] = currentSpeler.Id;
 
             return View(spel);
         }
@@ -114,6 +125,8 @@ namespace ReversiMvcApp.Controllers
                     .Include(spel => spel.Spelers)
                     .ToListAsync();
 
+                //if (speler.actueelSpelId == null || speler.actueelSpelId.Trim() == "") return RedirectToAction(nameof(Index));
+
                 foreach (Spel aangemaaktSpel in spellen)
                 {
                     foreach (Speler spelersVanSpel in aangemaaktSpel.Spelers)
@@ -123,11 +136,15 @@ namespace ReversiMvcApp.Controllers
                     }
                 }
 
-                spel.Spelers = new List<Speler>() { speler };
+                speler.Kleur = Kleur.Zwart;
+                await _userManager.UpdateAsync(speler);
                 
+                spel.Spelers = new List<Speler>() { speler };
+
                 _context.Add(spel);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new { id = speler.Id } );
+                return RedirectToAction(nameof(Details), "Spellen", new { id = speler.Id });
+
             }
             return View(spel);
         }
@@ -187,13 +204,13 @@ namespace ReversiMvcApp.Controllers
         // GET: Spellen/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id.Trim() == "" || id == null)
-            {
-                return NotFound();
-            }
+            //if (id.Trim() == "" || id == null)
+            //{
+            //    return NotFound();
+            //}
 
-            var spel = await _context.Spellen
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var spel = await _context.Spellen.FirstOrDefaultAsync(m => m.ID == id);
+            
             if (spel == null)
             {
                 return NotFound();
@@ -208,6 +225,9 @@ namespace ReversiMvcApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var spel = await _context.Spellen.FindAsync(id);
+            Speler speler = await _userManager.GetUserAsync(User);
+            
+            await _context.SaveChangesAsync();
 
             _context.Spellen.Remove(spel);
             await _context.SaveChangesAsync();
@@ -217,6 +237,59 @@ namespace ReversiMvcApp.Controllers
         private bool SpelExists(string id)
         {
             return _context.Spellen.Any(e => e.ID == id);
+        }
+
+        //ToDo: ValidationToken
+        [HttpPost, ActionName("joinspel")]
+        public async Task<IActionResult> JoinSpel(string Id)
+        {
+            Spel spel = await _context.Spellen
+                .Include(x => x.Spelers)
+                .FirstOrDefaultAsync(x => x.ID == Id);
+
+            if (spel == null)
+            {
+                return NotFound();
+            }
+
+            Speler currentSpeler = await _userManager.GetUserAsync(User);
+            try
+            {
+                AddSpelerToSpel(spel, currentSpeler);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+            _context.Spellen.Update(spel);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), "Spellen", new { id = Id });
+        }
+
+        /// <summary>
+        /// Adds Speler to Spel
+        /// </summary>
+        /// <param name="spel">Het spel waarbij de speler aan toegevoegd wordt</param>
+        /// <param name="speler">De speler dat toegevoegt moet worden</param>
+        private void AddSpelerToSpel(Spel spel, Speler speler)
+        {
+            if (spel.Spelers == null)
+                throw new NullReferenceException("Dit spel heeft nog geen Collection! Ben je een include vergeten?");
+
+            if (spel.Spelers.Count() >= 2)
+                throw new Exception("Het spel zit al vol!");
+
+            //update Spel
+            spel.Spelers.Add(speler);
+
+            _context.Spellen.Update(spel);
+            _context.SaveChanges();
+
+            //update speler
+            speler.Kleur = Kleur.Wit;
+            _userManager.UpdateAsync(speler);
         }
     }
 }

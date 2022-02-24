@@ -10,6 +10,13 @@
         "dist/browser/signalr.js",
         "dist/browser/signalr.min.js"
       ]
+    },
+    {
+      "library": "require.js@2.3.6",
+      "destination": "wwwroot/require.js/",
+      "files": [
+        "require.min.js"
+      ]
     }
   ]
 }

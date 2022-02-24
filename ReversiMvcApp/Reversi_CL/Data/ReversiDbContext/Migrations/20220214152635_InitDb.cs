@@ -45,18 +45,30 @@ namespace Reversi_CL.Data.ReversiDbContext.Migrations
                     AantalGewonnen = table.Column<int>(nullable: false),
                     AantalVerloren = table.Column<int>(nullable: false),
                     AantalGelijk = table.Column<int>(nullable: false),
+                    Spel = table.Column<string>(nullable: true),
                     SpelID = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Speler", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Speler_Spellen_Spel",
+                        column: x => x.Spel,
+                        principalTable: "Spellen",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Speler_Spellen_SpelID",
                         column: x => x.SpelID,
                         principalTable: "Spellen",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Speler_Spel",
+                table: "Speler",
+                column: "Spel");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Speler_SpelID",

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Reversi_CL.Models
 {
@@ -17,12 +18,12 @@ namespace Reversi_CL.Models
         public Kleur AandeBeurt { get; set; }
         public string Omschrijving { get; set; }
         public string Token { get; set; }
+
         [Column(TypeName = "nvarchar(255)")]
         public Kleur[,] Bord { get; set; }
 
-        //Relations
+        [MaxLength(2)]
         public ICollection<Speler> Spelers { get; set; }
-
 
         public Spel()
         {
@@ -35,8 +36,6 @@ namespace Reversi_CL.Models
             this.Bord[4, 4] = Kleur.Wit;
             this.AandeBeurt = Kleur.Zwart;
         }
-
-
 
         private Kleur NietAandeBeurt()
         {

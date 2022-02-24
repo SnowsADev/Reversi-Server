@@ -18,7 +18,8 @@ namespace Reversi_BackEnd.Controllers
             { 
                 Converters = 
                 {
-                    new KleurMultiArrayJsonConverter()
+                    new KleurMultiArrayJsonConverter(),
+                    new SpelerJsonConverter()
                 } 
             };
         
@@ -34,7 +35,8 @@ namespace Reversi_BackEnd.Controllers
         {
             return  _context.Spellen
                 .Include(spel => spel.Spelers)
-                .FirstOrDefault(x => x.ID == spelToken);
+                .Where(spel => spel.ID == spelToken)
+                .FirstOrDefault();
         }
 
         // api/Spel/<Token> - GET
@@ -43,8 +45,8 @@ namespace Reversi_BackEnd.Controllers
         // - bord en elk vakje de bezetting
         // - Wie er aan de beurt is
         // - Status van het spel (bijv. De winnaar, opgeven door)
-        [HttpGet("/Api/Spel")]
-        public IActionResult GetSpel([FromQuery] string spelToken)
+        [HttpGet("/Api/Spel/{spelToken}")]
+        public IActionResult GetSpel([FromRoute] string spelToken)
         {
             Spel spel = GetSpelByToken(spelToken);
 
@@ -58,9 +60,35 @@ namespace Reversi_BackEnd.Controllers
             return Ok(json);
         }
 
+
+        [HttpPost("/Api/Spel/Pass")]
+        public IActionResult SlaBeurtOver([FromBody] SlaBeurtOverDTO model)
+        {
+            Spel spel = GetSpelByToken(model.SpelToken);
+
+            //Spel bestaat niet
+            if (spel == null) return NotFound();
+
+            //Speler niet in spel
+            if (spel.Spelers.Any(speler => speler.Id == model.SpelerToken))
+            {
+                return BadRequest();
+            }
+            
+
+            return Ok();
+        }
+
+
+        public class SlaBeurtOverDTO
+        {
+            public string SpelerToken { get; set; }
+            public string SpelToken { get; set; }
+        }
+
+
         // Api/Spel/Beurt - GET
         // Opvragen wie er aan de beurt is.
-
         [HttpGet("/Api/Spel/Beurt")]
         public IActionResult GetAandeBeurt([FromRoute] string spelToken)
         {

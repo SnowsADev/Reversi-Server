@@ -33,6 +33,8 @@ namespace Reversi_CL.Helpers
         }
     }
 
+
+
     // Ben nog niet helemaal blij met idee om hier een extension op string van te maken, maar het is tot nu toe het makkelijkst
     public static class BordExtensions
     {

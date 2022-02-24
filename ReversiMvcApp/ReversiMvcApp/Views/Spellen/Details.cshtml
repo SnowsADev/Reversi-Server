@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    string userId = ViewData["UserID"].ToString();
 }
 
 @section Scripts {
@@ -13,30 +15,54 @@
     <script type="text/javascript">
         "use strict";
 
-        var connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();
-
-        connection.on("ReceiveJoinRequest", function (message) {
-            SPA.feedbackModule.toonSuccesBericht(message);
-        });
-
-        connection.on("ReceiveErrorMessage", function (message) {
-            SPA.feedbackModule.toonErrorBericht(message);
-        });
-
-        connection.start().then(function () {
-            //document.getElementById("btnSendInvite").disabled = false;
-        }).catch(function (err) {
-            return console.error(err.toString());
-        });
-
         $(document).ready(function () {
-            SPA.Data.initModule("production", "https://localhost:44368/api/spel");
+            var connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();
 
-            SPA.Reversi.show();
+            connection.on("ReceiveJoinRequest", function (message, spelId, spelerId) {
+                let data = {
+                    spelerId, spelerId,
+                    spelId: spelId
+                }
+
+                SPA.feedbackModule.toonSuccesBericht(message, data);
+
+                $('.popup__btn--accept').each((index, element) => {
+
+                    if ($(element).attr("onClick") === undefined) {
+                        $(element).click(function () {
+                            
+                            connection
+                                .invoke("SendJoinRequestResult", data.spelId, data.spelerId, true)
+                                .catch(function (err) {
+                                    return console.error(err.toString());
+                                });
+                        });
+
+                        console.log($(element));
+                    }
+                    
+                    
+                });
+            });
+
+
+            connection.on("ReceiveErrorMessage", function (message) {
+                SPA.feedbackModule.toonErrorBericht(message);
+            });
+
+            connection.start().then(function () {
+                //document.getElementById("btnSendInvite").disabled = false;
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+            SPA.Data.initModule("production", "https://localhost:44368/api/spel", "@userId", "@Model.ID");
+            SPA.Reversi.initModule();
         });
-
-
-
     </script>
+
+    <h2>U bent de kleur: @Model.Spelers.FirstOrDefault(s => s.Id == userId).Kleur</h2>
+
+    
 
 }

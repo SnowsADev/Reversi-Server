@@ -5,12 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Reversi_CL.Data.ReversiDbIdentityContext;
 
 namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
 {
     [DbContext(typeof(ReversiDbIdentityContext))]
-    [Migration("20220128152634_InitDb")]
-    partial class InitDb
+    [Migration("20220222150234_AddedProperty_Speler_Kleur")]
+    partial class AddedProperty_Speler_Kleur
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -151,6 +152,29 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Reversi_CL.Models.Spel", b =>
+                {
+                    b.Property<string>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AandeBeurt")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Bord")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Omschrijving")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Spel");
+                });
+
             modelBuilder.Entity("Reversi_CL.Models.Speler", b =>
                 {
                     b.Property<string>("Id")
@@ -178,6 +202,9 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Kleur")
+                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -208,6 +235,12 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Spel")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SpelID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -224,6 +257,10 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("Spel");
+
+                    b.HasIndex("SpelID");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -277,6 +314,18 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Reversi_CL.Models.Speler", b =>
+                {
+                    b.HasOne("Reversi_CL.Models.Spel", "ActueelSpel")
+                        .WithMany()
+                        .HasForeignKey("Spel");
+
+                    b.HasOne("Reversi_CL.Models.Spel", null)
+                        .WithMany("Spelers")
+                        .HasForeignKey("SpelID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

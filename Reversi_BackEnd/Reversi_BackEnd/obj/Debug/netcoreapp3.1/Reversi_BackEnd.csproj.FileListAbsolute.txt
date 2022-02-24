@@ -33,7 +33,6 @@ E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\bin\Debug\netcoreapp3.1\System
 E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\bin\Debug\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll
 E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\bin\Debug\netcoreapp3.1\Reversi_CL.dll
 E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\bin\Debug\netcoreapp3.1\Reversi_CL.pdb
-E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\obj\Debug\netcoreapp3.1\Reversi_BackEnd.csprojAssemblyReference.cache
 E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\obj\Debug\netcoreapp3.1\Reversi_BackEnd.AssemblyInfoInputs.cache
 E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\obj\Debug\netcoreapp3.1\Reversi_BackEnd.AssemblyInfo.cs
 E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\obj\Debug\netcoreapp3.1\Reversi_BackEnd.csproj.CoreCompileInputs.cache
@@ -82,3 +81,5 @@ E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\bin\Debug\netcoreapp3.1\runtim
 E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
 E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
+E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\obj\Debug\netcoreapp3.1\Reversi_BackEnd.csproj.AssemblyReference.cache
+E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\obj\Debug\netcoreapp3.1\Reversi_BackEnd.GeneratedMSBuildEditorConfig.editorconfig
