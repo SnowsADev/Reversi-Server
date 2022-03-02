@@ -18,6 +18,9 @@ namespace Reversi_CL.Models
         public Kleur AandeBeurt { get; set; }
         public string Omschrijving { get; set; }
         public string Token { get; set; }
+        
+        [Column("Afgelopen")]
+        public bool SpelIsAfgelopen { get; set; } = false;
 
         [Column(TypeName = "nvarchar(255)")]
         public Kleur[,] Bord { get; set; }
@@ -66,17 +69,16 @@ namespace Reversi_CL.Models
             if (aantalZonderKleur > 0)
                 return false;
 
+
+            SpelIsAfgelopen = true;
             return true;
         }
 
         public bool DoeZet(int rijZet, int kolomZet)
         {
+            if (Afgelopen()) return false;
+            
             bool zetGedaan = false;
-
-            // g g g g
-            // g x g g 2,3
-            // g w z g rij 3, kolom 4
-            // g z w g rv = 1 kv = 1
 
             if (ZetMogelijk(rijZet, kolomZet))
             {

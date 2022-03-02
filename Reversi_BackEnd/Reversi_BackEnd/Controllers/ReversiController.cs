@@ -60,7 +60,6 @@ namespace Reversi_BackEnd.Controllers
             return Ok(json);
         }
 
-
         [HttpPost("/Api/Spel/Pass")]
         public IActionResult SlaBeurtOver([FromBody] SlaBeurtOverDTO model)
         {
@@ -74,7 +73,8 @@ namespace Reversi_BackEnd.Controllers
             {
                 return BadRequest();
             }
-            
+
+            spel.Pas();
 
             return Ok();
         }

@@ -18,8 +18,17 @@
 
 #bord__table 
 {
-background-color: green;
-height: 100%;
+    background-color: green;
+    height: 100%;
+}
+
+#bord__table tr {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #bord__table td, tr {
@@ -58,6 +67,71 @@ height: 100%;
 
 
 
+
+body,p {margin:0 !important}
+
+#page__overlay {
+    display: flex;
+    position: absolute;
+    
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+
+    
+    vertical-align: middle;
+    text-align: center;
+    justify-content: center;
+    background-color: rgba(255,255,255,0.5);
+}
+
+#page__results
+{
+    display: inline-flex;
+
+    height: fit-content;
+    width: 400px;
+    
+    background: blue;
+    border-radius: 5px;
+    color: black;
+    font-size: 2rem;
+
+    margin-top: 15vh;
+
+    align-content: center;
+    flex-direction: column;
+}
+#page__results span {
+    height: fit-content;
+    width: 100%;
+}
+
+#page__results button {
+    display: inline-flex;
+    
+    width: 15rem;
+    height: 3rem;
+
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    border: none;
+    color: black;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: medium;
+
+}
+
+#page__results button:hover {
+    border: 2px solid black;
+}
 
 #scoreboard__wrapper
 {

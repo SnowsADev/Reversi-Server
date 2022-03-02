@@ -119,14 +119,68 @@ SPA.Data = function ($) {
     return result;
   };
 
-  var passMove = function passMove() {};
+  var passMove = function passMove() {
+    if (SPA.Reversi.isAanDeBeurt()) return;
+    var result;
+
+    if (_configMap.environment === "production") {
+      var requestBody = {
+        spelToken: SPA.Reversi._spel.ID,
+        spelerToken: _configMap.spelerId
+      };
+      result = $.ajax({
+        dataType: "json",
+        contentType: "application/json",
+        accepts: "application/json",
+        crossDomain: true,
+        type: "PUT",
+        url: _configMap.endpoint + "/Pass",
+        data: JSON.stringify(requestBody),
+        async: false,
+        success: function success(data) {
+          SPA.Reversi._spel = data;
+          SPA.Reversi.show();
+          return true;
+        },
+        error: function error(err) {
+          console.log(err);
+          SPA.feedbackModule.toonErrorBericht(err.status + ": " + err.responseJSON.title);
+        }
+      });
+    } else {
+      if (this._spel === undefined || this._spel === null) {
+        this._spel = getSpellen();
+      }
+
+      if (SPA.Reversi._possibleMoves.length === 0) {
+        SPA.Data._spel.AandeBeurt = SPA.Data._spel.AandeBeurt === 1 ? 2 : 1;
+        result = true;
+      }
+    }
+
+    return result;
+  };
+
+  var terugNaarOverzicht = function terugNaarOverzicht() {
+    if (_configMap.environment === "production") {
+      $.ajax({
+        type: "GET",
+        url: "/Spellen/",
+        error: function error(err) {
+          console.log(err);
+          SPA.feedbackModule.toonErrorBericht(err.status + ": " + err.responseJSON.title);
+        }
+      });
+    }
+  };
 
   return {
     initModule: initModule,
     getSpellen: getSpellen,
     makeMove: makeMove,
     passMove: passMove,
-    getSpelerId: getSpelerId
+    getSpelerId: getSpelerId,
+    terugNaarOverzicht: terugNaarOverzicht
   };
 }(jQuery);
 
@@ -173,58 +227,11 @@ SPA.Reversi = function ($) {
     SPA.Reversi._currentSpeler = null;
     SPA.Reversi._isWaitingForPlayers = false;
     show();
+    setInterval(function () {
+      SPA.Reversi._spel = SPA.Data.getSpellen();
+      show();
+    }, 1000);
     return true;
-  };
-
-  var showScoreboard = function showScoreboard() {
-    var aantalZwart = 0;
-    var aantalWit = 0; //Calc score
-
-    SPA.Reversi._spel.Bord.forEach(function (rij) {
-      rij.forEach(function (kolom) {
-        switch (kolom) {
-          case 1:
-            aantalWit++;
-            break;
-
-          case 2:
-            aantalZwart++;
-            break;
-        }
-      });
-    });
-
-    var elWrapper = document.createElement("div");
-    elWrapper.id = "scoreboard__wrapper";
-
-    if (SPA.Reversi._spel.Spelers.length < 2) {
-      elWrapper.className = "scoreboard__wrapper--disabled";
-    }
-
-    var elAanDeBeurt = document.createElement("div");
-    elAanDeBeurt.id = "scoreboard__aanDeBeurt";
-    elAanDeBeurt.textContent = "Aan zet: ".concat(AanDeBeurtToString());
-    var elDivider = document.createElement("div");
-    elDivider.className = "scoreboard__div";
-    var elPuntenWit = document.createElement("div");
-    elPuntenWit.textContent = "Zwart: ".concat(aantalWit);
-    elPuntenWit.id = "scoreboard__punten--wit";
-    elPuntenWit.className = "scoreboard__punten";
-    var elPuntenZwart = document.createElement("div");
-    elPuntenZwart.id = "scoreboard__punten--wit";
-    elPuntenZwart.className = "scoreboard__punten";
-    elPuntenZwart.textContent = "Wit: ".concat(aantalZwart);
-    elWrapper.appendChild(elAanDeBeurt);
-    elWrapper.appendChild(elDivider);
-    elWrapper.appendChild(elPuntenWit);
-    elWrapper.appendChild(elPuntenZwart);
-    var currentScoreboard = document.querySelector('#scoreboard__wrapper');
-
-    if (currentScoreboard !== null) {
-      currentScoreboard.parentNode.removeChild(currentScoreboard);
-    }
-
-    document.body.appendChild(elWrapper);
   };
 
   var show = function show() {
@@ -238,9 +245,10 @@ SPA.Reversi = function ($) {
     }
 
     var spelers = SPA.Reversi._spel.Spelers;
-    SPA.Reversi._currentSpeler = spelers.forEach(function (speler) {
-      if (speler.Id === SPA.Data.getSpelerId()) {
-        return speler;
+    var applicationUserId = SPA.Data.getSpelerId();
+    spelers.forEach(function (speler) {
+      if (speler.Id === applicationUserId) {
+        SPA.Reversi._currentSpeler = speler;
       }
     });
     showScoreboard();
@@ -252,8 +260,18 @@ SPA.Reversi = function ($) {
 
     createBord();
     SPA.Reversi._possibleMoves = calcAllPossibleMoves();
+    var numberOfEmptySpaces = calcEmptySpaces();
 
-    if (SPA.Reversi._possibleMoves.length === 0) {}
+    if (numberOfEmptySpaces === 0) {
+      // Spel is afgelopen
+      createResultScreen();
+      return;
+    }
+
+    if (SPA.Reversi._possibleMoves.length === 0) {
+      alert('No Moves Possible');
+      SPA.Reversi.passMove();
+    }
   };
 
   var createWachtenOpSpelersbericht = function createWachtenOpSpelersbericht() {
@@ -280,6 +298,57 @@ SPA.Reversi = function ($) {
 
     elWaitingMessage.appendChild(elLoadingIcon);
     document.body.appendChild(elWaitingMessage);
+  };
+
+  var showScoreboard = function showScoreboard() {
+    SPA.Reversi._aantalZwart = 0;
+    SPA.Reversi._aantalWit = 0; //Calc score
+
+    SPA.Reversi._spel.Bord.forEach(function (rij) {
+      rij.forEach(function (kolom) {
+        switch (kolom) {
+          case 1:
+            SPA.Reversi._aantalWit++;
+            break;
+
+          case 2:
+            SPA.Reversi._aantalZwart++;
+            break;
+        }
+      });
+    });
+
+    var elWrapper = document.createElement("div");
+    elWrapper.id = "scoreboard__wrapper";
+
+    if (SPA.Reversi._spel.Spelers.length < 2) {
+      elWrapper.className = "scoreboard__wrapper--disabled";
+    }
+
+    var elAanDeBeurt = document.createElement("div");
+    elAanDeBeurt.id = "scoreboard__aanDeBeurt";
+    elAanDeBeurt.textContent = "Aan zet: ".concat(AanDeBeurtToString());
+    var elDivider = document.createElement("div");
+    elDivider.className = "scoreboard__div";
+    var elPuntenWit = document.createElement("div");
+    elPuntenWit.textContent = "Zwart: ".concat(SPA.Reversi._aantalWit);
+    elPuntenWit.id = "scoreboard__punten--wit";
+    elPuntenWit.className = "scoreboard__punten";
+    var elPuntenZwart = document.createElement("div");
+    elPuntenZwart.id = "scoreboard__punten--wit";
+    elPuntenZwart.className = "scoreboard__punten";
+    elPuntenZwart.textContent = "Wit: ".concat(SPA.Reversi._aantalZwart);
+    elWrapper.appendChild(elAanDeBeurt);
+    elWrapper.appendChild(elDivider);
+    elWrapper.appendChild(elPuntenWit);
+    elWrapper.appendChild(elPuntenZwart);
+    var currentScoreboard = document.querySelector('#scoreboard__wrapper');
+
+    if (currentScoreboard !== null) {
+      currentScoreboard.parentNode.removeChild(currentScoreboard);
+    }
+
+    document.body.appendChild(elWrapper);
   };
 
   var createBord = function createBord() {
@@ -362,9 +431,54 @@ SPA.Reversi = function ($) {
     }
   };
 
+  var createResultScreen = function createResultScreen() {
+    SPA.Reversi._spel.Bord.forEach(function (rij) {
+      rij.forEach(function (kolom) {
+        switch (kolom) {
+          case 0:
+            SPA.Reversi._aantalLeeg++;
+            break;
+
+          case 1:
+            SPA.Reversi._aantalWit++;
+            break;
+
+          case 2:
+            SPA.Reversi._aantalZwart++;
+            break;
+        }
+      });
+    });
+
+    var elOverlay = document.createElement('div');
+    elOverlay.id = 'page__overlay';
+    var elResults = document.createElement('div');
+    elResults.id = 'page__results';
+    var elHeaderSpan = document.createElement('span');
+    var overzichtBericht = ' heeft het spel gewonnen!';
+
+    if (SPA.Reversi._aantalWit > SPA.Reversi._aantalZwart) {
+      overzichtBericht = "Wit" + overzichtBericht;
+    } else if (SPA.Reversi._aantalZwart > SPA.Reversi._aantalWit) {
+      overzichtBericht = "Zwart" + overzichtBericht;
+    } else {
+      overzichtBericht = "Gelijkspel!";
+    }
+
+    elHeaderSpan.innerHTML = overzichtBericht;
+    var elTerugNaarOverzichtButton = document.createElement('button');
+    elTerugNaarOverzichtButton.onclick = SPA.Data.terugNaarOverzicht;
+    elTerugNaarOverzichtButton.innerHTML = 'Terug naar overzicht';
+    elResults.appendChild(elHeaderSpan);
+    elResults.appendChild(elTerugNaarOverzichtButton);
+    elOverlay.appendChild(elResults);
+    document.body.appendChild(elOverlay);
+  };
+
   var handleTableCellOnClick = function handleTableCellOnClick(e) {
+    e.preventDefault();
     if (SPA.Reversi._isWaitingForPlayers) return;
-    if (SPA.Reversi._currentSpeler.Kleur !== isAanDeBeurt()) return;
+    if (!isAanDeBeurt()) return;
     var cell = e.target;
     var row = parseInt(e.path[1].id);
     var column = cell.id.charCodeAt(0) - 65;
@@ -379,7 +493,7 @@ SPA.Reversi = function ($) {
   var handleVisualZetMogelijk = function handleVisualZetMogelijk(e) {
     var cell = e.target;
     if (SPA.Reversi._isWaitingForPlayers) return;
-    if (isAanDeBeurt()) return;
+    if (isAanDeBeurt() === false) return;
 
     switch (e.type) {
       case "mouseleave":
@@ -387,9 +501,8 @@ SPA.Reversi = function ($) {
         break;
 
       case "mouseenter":
-        var row = cell.id.charCodeAt(0) - 66;
-        var column = parseInt(e.path[1].id);
-
+        // let row = cell.id.charCodeAt(0) - 66;
+        // let column = parseInt(e.path[1].id);
         if (SPA.Reversi._possibleMoves.includes(cell.id)) {
           cell.classList.add("bord__td--active");
         }
@@ -414,6 +527,20 @@ SPA.Reversi = function ($) {
       });
     });
     return result;
+  };
+
+  var calcEmptySpaces = function calcEmptySpaces() {
+    var aantal = 0; //Calc score
+
+    SPA.Reversi._spel.Bord.forEach(function (rij) {
+      rij.forEach(function (kolom) {
+        if (kolom === 0) {
+          aantal++;
+        }
+      });
+    });
+
+    return aantal;
   };
 
   var movePossible = function movePossible(rijZet, kolomZet) {
