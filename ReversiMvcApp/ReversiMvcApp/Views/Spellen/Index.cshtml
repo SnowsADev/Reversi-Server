@@ -9,23 +9,21 @@
 }
 
 @section Scripts {
-    <script type="text/javascript" src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript" src="~/lib/signalr/signalr.min.js"></script>
     <script type="text/javascript" src="~/js/app.js"></script>
-
 
     <script type="text/javascript">
         "use strict";
 
         let connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();
 
+
         connection.on("ReceiveErrorPopup", function (message) {
             SPA.feedbackModule.toonErrorBericht(message);
         });
 
-        connection.on("ReceiveJoinRequestResult", function (json) {
-            //console.log('Received Request!');
-            //console.log(obj);
 
+        connection.on("ReceiveJoinRequestResult", function (json) {
             let data = JSON.parse(json);
             console.log(data);
 
@@ -42,15 +40,15 @@
             }
             
         });
-        connection.start().then(function () { 
 
-        }).catch(function (err) {
+        connection.start().catch(function (err) {
             return console.error(err.toString());
         });
 
 
         //Send Join Request
         document.getElementById("TblSpellen").addEventListener("click", function (event) {
+            event.preventDefault();
             const isButton = event.target.className.includes("btn");
 
             if (!isButton) {
@@ -58,14 +56,10 @@
             }
 
             connection.invoke("SendJoinRequest", event.target.dataset.id, "@userId").catch(function (err) {
+                SPA.feedbackModule.toonErrorBericht(message);
                 return console.error(err.toString());
             });
-
-            event.preventDefault();
         });
-
-
-
     </script>
 
 }

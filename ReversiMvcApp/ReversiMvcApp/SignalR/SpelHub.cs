@@ -22,6 +22,28 @@ namespace ReversiMvcApp.SignalR
             _reversiDbIdentityContext = reversiDbIdentityContext;
         }
 
+        public async Task SendRefreshGameNotification(string userId, string spelID)
+        {
+            Spel spel = _reversiDbContext.Spellen
+                .Include(spel => spel.Spelers)
+                .FirstOrDefault(x => x.ID == spelID);
+
+            if (spel == null)
+            {
+                await SendErrorPopup(userId);
+                return;
+            }
+
+            Speler target = spel.Spelers.FirstOrDefault(speler => speler.Id != userId);
+
+            if (target == null)
+            {
+                await SendErrorPopup(userId);
+                return;
+            }
+
+            await Clients.User(target.Id).SendAsync("ReceiveRefreshGameNotification");
+        }
 
         public async Task SendMessage(string user, string message)
         {

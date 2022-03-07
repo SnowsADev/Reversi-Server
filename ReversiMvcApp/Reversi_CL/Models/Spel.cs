@@ -17,7 +17,6 @@ namespace Reversi_CL.Models
         public string ID { get; set; }
         public Kleur AandeBeurt { get; set; }
         public string Omschrijving { get; set; }
-        public string Token { get; set; }
         
         [Column("Afgelopen")]
         public bool SpelIsAfgelopen { get; set; } = false;
@@ -52,9 +51,9 @@ namespace Reversi_CL.Models
         public bool Afgelopen()
         {
             int aantalZonderKleur = 0;
-            for (int rij = 0; rij <= Bord.GetLength(0) - 1; rij++)
+            for (int rij = 0; rij < Bord.GetLength(0); rij++)
             {
-                for (int kolom = 0; kolom < Bord.GetLength(1) - 1; kolom++)
+                for (int kolom = 0; kolom < Bord.GetLength(1); kolom++)
                 {
                     if (Bord[rij, kolom] == Kleur.Geen)
                     {
@@ -70,6 +69,7 @@ namespace Reversi_CL.Models
                 return false;
 
 
+            this.Spelers.Clear();
             SpelIsAfgelopen = true;
             return true;
         }
@@ -209,6 +209,7 @@ namespace Reversi_CL.Models
         {
             //check if any move is possible
             bool zetMogelijk = false;
+
             for (int rij = 0; rij <= Bord.GetLength(0) - 1; rij++)
             {
                 for (int kolom = 0; kolom < Bord.GetLength(1) - 1; kolom++)

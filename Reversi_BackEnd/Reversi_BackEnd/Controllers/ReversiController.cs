@@ -61,29 +61,31 @@ namespace Reversi_BackEnd.Controllers
         }
 
         [HttpPost("/Api/Spel/Pass")]
-        public IActionResult SlaBeurtOver([FromBody] SlaBeurtOverDTO model)
+        public IActionResult SlaBeurtOver([FromBody] SlaBeurtOverDTO dto)
         {
-            Spel spel = GetSpelByToken(model.SpelToken);
+            Spel spel = GetSpelByToken(dto.SpelId);
 
             //Spel bestaat niet
             if (spel == null) return NotFound();
 
             //Speler niet in spel
-            if (spel.Spelers.Any(speler => speler.Id == model.SpelerToken))
+            if (!spel.Spelers.Any(speler => speler.Id == dto.SpelerId))
             {
                 return BadRequest();
             }
 
             spel.Pas();
+            _context.Update(spel);
+            _context.SaveChanges();
 
-            return Ok();
+            return GetSpel(dto.SpelId);
         }
 
 
         public class SlaBeurtOverDTO
         {
-            public string SpelerToken { get; set; }
-            public string SpelToken { get; set; }
+            public string SpelerId { get; set; }
+            public string SpelId { get; set; }
         }
 
 
@@ -133,6 +135,13 @@ namespace Reversi_BackEnd.Controllers
                 return GetSpel(dto.SpelToken);
             }
 
+            if (spel.SpelIsAfgelopen)
+            {
+                _context.Spellen.Update(spel);
+                _context.SaveChanges();
+                return GetSpel(dto.SpelToken);
+            }
+
             return BadRequest("Onmogelijke Zet");
         }
 
@@ -148,11 +157,21 @@ namespace Reversi_BackEnd.Controllers
         // Api/Spel/Opgeven - PUT
         // Hiermee geeft de speler op
         [HttpPut("Api/Spel/Opgeven")]
-        public ActionResult GeefOp([FromBody] string spelToken, string spelerToken)
+        public async Task<ActionResult> GeefOp([FromBody] GeefOpDTO dto)
         {
-            var tempVariable1 = spelToken;
-            var tempVariable2 = spelerToken;
+            Spel spel = GetSpelByToken(dto.SpelId);
+            spel.SpelIsAfgelopen = true;
+
+            _context.Update(spel);
+            await _context.SaveChangesAsync();
+            
             return Ok();
+        }
+
+        public class GeefOpDTO
+        {
+            public string SpelId { get; set; }
+            public string spelerId { get; set; }
         }
     }
 }

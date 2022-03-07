@@ -1,5 +1,7 @@
 "use strict";
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var SPA = function ($) {
   var _configMap = {}; //initialize function
 
@@ -35,7 +37,7 @@ SPA.Data = function ($) {
   };
 
   var makeMove = function makeMove(row, column) {
-    if (SPA.Reversi.isAanDeBeurt()) return;
+    if (!SPA.Reversi.isAanDeBeurt()) return;
     var result;
 
     if (_configMap.environment === "production") {
@@ -57,6 +59,7 @@ SPA.Data = function ($) {
         success: function success(data) {
           SPA.Reversi._spel = data;
           SPA.Reversi.show();
+          sendRefreshGameNotification();
           return true;
         },
         error: function error(err) {
@@ -77,6 +80,13 @@ SPA.Data = function ($) {
     }
 
     return result;
+  };
+
+  var sendRefreshGameNotification = function sendRefreshGameNotification() {
+    SPA.Reversi._connection.invoke('SendRefreshGameNotification', _configMap.spelerId, _configMap.spelId)["catch"](function (err) {
+      SPA.feedbackModule.toonErrorBericht(err.toString());
+      return console.error(err.toString());
+    });
   };
 
   var getSpellen = function getSpellen() {
@@ -120,30 +130,31 @@ SPA.Data = function ($) {
   };
 
   var passMove = function passMove() {
-    if (SPA.Reversi.isAanDeBeurt()) return;
+    if (!SPA.Reversi.isAanDeBeurt()) return;
     var result;
 
     if (_configMap.environment === "production") {
       var requestBody = {
-        spelToken: SPA.Reversi._spel.ID,
-        spelerToken: _configMap.spelerId
+        spelId: SPA.Reversi._spel.ID,
+        spelerId: _configMap.spelerId
       };
       result = $.ajax({
         dataType: "json",
         contentType: "application/json",
         accepts: "application/json",
         crossDomain: true,
-        type: "PUT",
+        type: "POST",
         url: _configMap.endpoint + "/Pass",
         data: JSON.stringify(requestBody),
         async: false,
         success: function success(data) {
           SPA.Reversi._spel = data;
           SPA.Reversi.show();
+          sendRefreshGameNotification();
           return true;
         },
         error: function error(err) {
-          console.log(err);
+          console.log(err.toString());
           SPA.feedbackModule.toonErrorBericht(err.status + ": " + err.responseJSON.title);
         }
       });
@@ -163,14 +174,7 @@ SPA.Data = function ($) {
 
   var terugNaarOverzicht = function terugNaarOverzicht() {
     if (_configMap.environment === "production") {
-      $.ajax({
-        type: "GET",
-        url: "/Spellen/",
-        error: function error(err) {
-          console.log(err);
-          SPA.feedbackModule.toonErrorBericht(err.status + ": " + err.responseJSON.title);
-        }
-      });
+      window.location.href = window.location.origin + '/Spellen/';
     }
   };
 
@@ -217,21 +221,59 @@ SPA.Model = function ($) {
   return {
     initModule: initModule
   };
-}(jQuery);
+}(jQuery); // const signalR = require("~/dist/signalr/signalr.min.js");
+
 
 SPA.Reversi = function ($) {
-  var _configMap = {};
+  var _configMap = {
+    signalRHub: "/SpelHub"
+  };
 
   var initModule = function initModule() {
     SPA.Reversi._spel = null;
     SPA.Reversi._currentSpeler = null;
-    SPA.Reversi._isWaitingForPlayers = false;
-    show();
-    setInterval(function () {
-      SPA.Reversi._spel = SPA.Data.getSpellen();
+    SPA.Reversi._isWaitingForPlayers = false; //SignalR setup
+
+    SPA.Reversi._connection = new signalR.HubConnectionBuilder().withUrl(_configMap.signalRHub).build(); //Refresh when a move is made
+
+    SPA.Reversi._connection.on("ReceiveRefreshGameNotification", refreshSpel); //Show join requests
+
+
+    SPA.Reversi._connection.on("ReceiveJoinRequest", function (message, spelId, spelerId) {
+      var _data2;
+
+      var data = (_data2 = {
+        spelerId: spelerId
+      }, _defineProperty(_data2, "spelerId", spelerId), _defineProperty(_data2, "spelId", spelId), _data2);
+      SPA.feedbackModule.toonSuccesBericht(message, data);
+      $('.popup__btn--accept').each(function (index, element) {
+        if ($(element).attr("onClick") === undefined) {
+          $(element).on("click", function () {
+            connection.invoke("SendJoinRequestResult", data.spelId, data.spelerId, true)["catch"](function (err) {
+              return console.error(err.toString());
+            });
+          });
+        }
+      });
+    }); //Show errors
+
+
+    SPA.Reversi._connection.on("ReceiveErrorMessage", function (message) {
+      SPA.feedbackModule.toonErrorBericht(message);
+    }); //start game
+
+
+    SPA.Reversi._connection.start().then(function () {
       show();
-    }, 1000);
-    return true;
+    })["catch"](function (err) {
+      SPA.feedbackModule.toonErrorBericht(err.toString());
+      return console.error(err.toString());
+    });
+  };
+
+  var refreshSpel = function refreshSpel() {
+    SPA.Reversi._spel = SPA.Data.getSpellen();
+    show();
   };
 
   var show = function show() {
@@ -262,15 +304,14 @@ SPA.Reversi = function ($) {
     SPA.Reversi._possibleMoves = calcAllPossibleMoves();
     var numberOfEmptySpaces = calcEmptySpaces();
 
-    if (numberOfEmptySpaces === 0) {
+    if (numberOfEmptySpaces === 0 || SPA.Reversi._spel.Afgelopen === 1) {
       // Spel is afgelopen
       createResultScreen();
       return;
     }
 
     if (SPA.Reversi._possibleMoves.length === 0) {
-      alert('No Moves Possible');
-      SPA.Reversi.passMove();
+      SPA.Data.passMove();
     }
   };
 
@@ -331,13 +372,13 @@ SPA.Reversi = function ($) {
     var elDivider = document.createElement("div");
     elDivider.className = "scoreboard__div";
     var elPuntenWit = document.createElement("div");
-    elPuntenWit.textContent = "Zwart: ".concat(SPA.Reversi._aantalWit);
+    elPuntenWit.textContent = "Zwart: ".concat(SPA.Reversi._aantalZwart);
     elPuntenWit.id = "scoreboard__punten--wit";
     elPuntenWit.className = "scoreboard__punten";
     var elPuntenZwart = document.createElement("div");
     elPuntenZwart.id = "scoreboard__punten--wit";
     elPuntenZwart.className = "scoreboard__punten";
-    elPuntenZwart.textContent = "Wit: ".concat(SPA.Reversi._aantalZwart);
+    elPuntenZwart.textContent = "Wit: ".concat(SPA.Reversi._aantalWit);
     elWrapper.appendChild(elAanDeBeurt);
     elWrapper.appendChild(elDivider);
     elWrapper.appendChild(elPuntenWit);
@@ -485,8 +526,7 @@ SPA.Reversi = function ($) {
 
     if (SPA.Reversi._possibleMoves.includes(cell.id)) {
       SPA.Data.makeMove(row, column);
-      SPA.Reversi.show();
-      SPA.Reversi._possibleMoves = calcAllPossibleMoves();
+      SPA.Reversi.show(); // SPA.Reversi._possibleMoves = calcAllPossibleMoves();
     }
   };
 
@@ -621,7 +661,8 @@ SPA.Reversi = function ($) {
     initModule: initModule,
     show: show,
     movePossible: movePossible,
-    isAanDeBeurt: isAanDeBeurt
+    isAanDeBeurt: isAanDeBeurt,
+    refreshSpel: refreshSpel
   };
 }(jQuery);
 

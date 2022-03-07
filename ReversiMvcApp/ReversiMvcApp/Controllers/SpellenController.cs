@@ -34,6 +34,7 @@ namespace ReversiMvcApp.Controllers
             // Checken of de speler niet al in een spel zit.
             List<Spel> spellen = _context.Spellen
                 .AsNoTracking()
+                .Where(spel => spel.SpelIsAfgelopen == false)
                 .Include(spel => spel.Spelers)
                 .ToList();
 
@@ -56,6 +57,7 @@ namespace ReversiMvcApp.Controllers
             ViewData["bSpelerInSpel"] = bSpelerInSpel;
 
             var Spellen = await _context.Spellen
+                .Where(spel => !spel.SpelIsAfgelopen)
                 .Include(spel => spel.Spelers)
                 .ToListAsync();
 
@@ -76,6 +78,7 @@ namespace ReversiMvcApp.Controllers
             }
 
             var spel = await _context.Spellen
+                .Where(spel => !spel.SpelIsAfgelopen)
                 .Include(spel => spel.Spelers)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
@@ -122,6 +125,7 @@ namespace ReversiMvcApp.Controllers
                 // Checken of de speler niet al in een spel zit.
                 List<Spel> spellen = await _context.Spellen
                     .AsNoTracking()
+                    .Where(spel => !spel.SpelIsAfgelopen)
                     .Include(spel => spel.Spelers)
                     .ToListAsync();
 
@@ -244,6 +248,7 @@ namespace ReversiMvcApp.Controllers
         public async Task<IActionResult> JoinSpel(string Id)
         {
             Spel spel = await _context.Spellen
+                .Where(spel => !spel.SpelIsAfgelopen)
                 .Include(x => x.Spelers)
                 .FirstOrDefaultAsync(x => x.ID == Id);
 

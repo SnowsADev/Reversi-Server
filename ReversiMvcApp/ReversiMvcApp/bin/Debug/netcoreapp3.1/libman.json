@@ -13,10 +13,7 @@
     },
     {
       "library": "require.js@2.3.6",
-      "destination": "wwwroot/require.js/",
-      "files": [
-        "require.min.js"
-      ]
+      "destination": "wwwroot/require.js/"
     }
   ]
 }

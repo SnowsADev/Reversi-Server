@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reversi_CL.Data.ReversiDbContext;
 
 namespace Reversi_CL.Data.ReversiDbContext.Migrations
 {
     [DbContext(typeof(ReversiDbContext))]
-    partial class ReversiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220303152411_Spel_Removed_Property_SpelToken")]
+    partial class Spel_Removed_Property_SpelToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -8,7 +8,7 @@
 }
 
 @section Scripts {
-    <script type="text/javascript" src="~/js/signalr/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript" src="~/lib/signalr/signalr.min.js"></script>
     <script type="text/javascript" src="~/js/app.js"></script>
 
 
@@ -16,45 +16,40 @@
         "use strict";
 
         $(document).ready(function () {
-            var connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();
+            //var connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();
 
-            connection.on("ReceiveJoinRequest", function (message, spelId, spelerId) {
-                let data = {
-                    spelerId, spelerId,
-                    spelId: spelId
-                }
+            //connection.on("ReceiveJoinRequest", function (message, spelId, spelerId) {
+            //    let data = {
+            //        spelerId, spelerId,
+            //        spelId: spelId
+            //    }
 
-                SPA.feedbackModule.toonSuccesBericht(message, data);
+            //    SPA.feedbackModule.toonSuccesBericht(message, data);
 
-                $('.popup__btn--accept').each((index, element) => {
+            //    $('.popup__btn--accept').each((index, element) => {
 
-                    if ($(element).attr("onClick") === undefined) {
-                        $(element).click(function () {
+            //        if ($(element).attr("onClick") === undefined) {
+            //            $(element).click(function () {
                             
-                            connection
-                                .invoke("SendJoinRequestResult", data.spelId, data.spelerId, true)
-                                .catch(function (err) {
-                                    return console.error(err.toString());
-                                });
-                        });
+            //                connection
+            //                    .invoke("SendJoinRequestResult", data.spelId, data.spelerId, true)
+            //                    .catch(function (err) {
+            //                        return console.error(err.toString());
+            //                    });
+            //            });
+            //        }
+            //    });
+            //});
 
-                        console.log($(element));
-                    }
-                    
-                    
-                });
-            });
+            //connection.on("ReceiveErrorMessage", function (message) {
+            //    SPA.feedbackModule.toonErrorBericht(message);
+            //});
 
-
-            connection.on("ReceiveErrorMessage", function (message) {
-                SPA.feedbackModule.toonErrorBericht(message);
-            });
-
-            connection.start().then(function () {
-                //document.getElementById("btnSendInvite").disabled = false;
-            }).catch(function (err) {
-                return console.error(err.toString());
-            });
+            //connection.start().then(function () {
+            //    //document.getElementById("btnSendInvite").disabled = false;
+            //}).catch(function (err) {
+            //    return console.error(err.toString());
+            //});
 
             SPA.Data.initModule("production", "https://localhost:44368/api/spel", "@userId", "@Model.ID");
             SPA.Reversi.initModule();

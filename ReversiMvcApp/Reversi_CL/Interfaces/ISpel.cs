@@ -6,7 +6,6 @@ namespace Reversi_CL.Models
     {
         string ID { get; set; }
         string Omschrijving { get; set; }
-        string Token { get; set; }
         ICollection<Speler> Spelers { get; set; }
         Kleur[,] Bord { get; set; }
         Kleur AandeBeurt { get; set; }
