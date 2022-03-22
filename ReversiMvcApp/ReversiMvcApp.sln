@@ -7,22 +7,29 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReversiMvcApp", "ReversiMvc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reversi_BackEnd", "..\Reversi_BackEnd\Reversi_BackEnd\Reversi_BackEnd.csproj", "{B74D470B-831E-4D52-B149-96CB17BB6BFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reversi_CL", "Reversi_CL\Reversi_CL.csproj", "{DFC1B91D-4B81-4B2E-AD07-6BC869625CF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reversi_CL", "Reversi_CL\Reversi_CL.csproj", "{DFC1B91D-4B81-4B2E-AD07-6BC869625CF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Beide Projecten Debug|Any CPU = Beide Projecten Debug|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{616A5BB8-3119-4FD9-BE8B-DFA001D17CC5}.Beide Projecten Debug|Any CPU.ActiveCfg = Beide Projecten Debug|Any CPU
+		{616A5BB8-3119-4FD9-BE8B-DFA001D17CC5}.Beide Projecten Debug|Any CPU.Build.0 = Beide Projecten Debug|Any CPU
 		{616A5BB8-3119-4FD9-BE8B-DFA001D17CC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{616A5BB8-3119-4FD9-BE8B-DFA001D17CC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{616A5BB8-3119-4FD9-BE8B-DFA001D17CC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{616A5BB8-3119-4FD9-BE8B-DFA001D17CC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B74D470B-831E-4D52-B149-96CB17BB6BFF}.Beide Projecten Debug|Any CPU.ActiveCfg = Beide Projecten Debug|Any CPU
+		{B74D470B-831E-4D52-B149-96CB17BB6BFF}.Beide Projecten Debug|Any CPU.Build.0 = Beide Projecten Debug|Any CPU
 		{B74D470B-831E-4D52-B149-96CB17BB6BFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B74D470B-831E-4D52-B149-96CB17BB6BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B74D470B-831E-4D52-B149-96CB17BB6BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B74D470B-831E-4D52-B149-96CB17BB6BFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFC1B91D-4B81-4B2E-AD07-6BC869625CF0}.Beide Projecten Debug|Any CPU.ActiveCfg = Beide Projecten Debug|Any CPU
+		{DFC1B91D-4B81-4B2E-AD07-6BC869625CF0}.Beide Projecten Debug|Any CPU.Build.0 = Beide Projecten Debug|Any CPU
 		{DFC1B91D-4B81-4B2E-AD07-6BC869625CF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DFC1B91D-4B81-4B2E-AD07-6BC869625CF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFC1B91D-4B81-4B2E-AD07-6BC869625CF0}.Release|Any CPU.ActiveCfg = Release|Any CPU

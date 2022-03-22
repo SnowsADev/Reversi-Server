@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+@{
+    ViewBag.Title = "Alle Rollen";
+}
+
+<h1>Alle Rollen</h1>
+
+@if (Model.Any())
+{
+    <a class="btn btn-primary mb-3" style="width:auto" asp-action="CreateRole" asp-controller="administration">
+        Maak nieuwe rol aan
+    </a>
+
+    foreach (var role in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                Role Id: @role.Id
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@role.Name</h5>
+            </div>
+            <div class="card-footer">
+                <a class="btn btn-primary" asp-action="EditRole" asp-route-id="@role.Id" >Aanpassen</a>
+                <a class="btn btn-danger" asp-action="delete" >Verwijderen</a>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <h2>Er zijn nog geen rollen aangemaakt. Klik op de knop hier onder om een rol aan te maken</h2>
+    <a class="btn btn-primary mb-3" style="width:auto" asp-action="CreateRole" asp-controller="administration">
+        Maak nieuwe rol aan
+    </a>
+}
+

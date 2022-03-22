@@ -18,6 +18,8 @@ namespace Reversi_CL.Models
         public int AantalVerloren { get; set; }
         public int AantalGelijk { get; set; }
 
+        public bool IsEnabled { get; set; } = true;
+
         public Kleur Kleur { get; set; } = Kleur.Geen; 
 
         //relations

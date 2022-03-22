@@ -469,3 +469,7 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\ReversiMvcApp.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\ReversiMvcApp.pdb
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\ReversiMvcApp.genruntimeconfig.cache
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\linux-x64\libman.json
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\ReversiMvcApp.csproj.AssemblyReference.cache
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\ReversiMvcApp.GeneratedMSBuildEditorConfig.editorconfig
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\linux-x64\Microsoft.AspNetCore.Authentication.Certificate.dll

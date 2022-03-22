@@ -19,6 +19,28 @@ CREATE TABLE [AspNetRoles] (
 
 GO
 
+CREATE TABLE [Spel] (
+    [ID] nvarchar(450) NOT NULL,
+    [AandeBeurt] int NOT NULL,
+    [Omschrijving] nvarchar(max) NULL,
+    [Token] nvarchar(max) NULL,
+    [Bord] nvarchar(255) NULL,
+    CONSTRAINT [PK_Spel] PRIMARY KEY ([ID])
+);
+
+GO
+
+CREATE TABLE [AspNetRoleClaims] (
+    [Id] int NOT NULL IDENTITY,
+    [RoleId] nvarchar(450) NOT NULL,
+    [ClaimType] nvarchar(max) NULL,
+    [ClaimValue] nvarchar(max) NULL,
+    CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE
+);
+
+GO
+
 CREATE TABLE [AspNetUsers] (
     [Id] nvarchar(450) NOT NULL,
     [UserName] nvarchar(256) NULL,
@@ -39,18 +61,11 @@ CREATE TABLE [AspNetUsers] (
     [AantalGewonnen] int NOT NULL,
     [AantalVerloren] int NOT NULL,
     [AantalGelijk] int NOT NULL,
-    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY ([Id])
-);
-
-GO
-
-CREATE TABLE [AspNetRoleClaims] (
-    [Id] int NOT NULL IDENTITY,
-    [RoleId] nvarchar(450) NOT NULL,
-    [ClaimType] nvarchar(max) NULL,
-    [ClaimValue] nvarchar(max) NULL,
-    CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE
+    [Spel] nvarchar(450) NULL,
+    [SpelID] nvarchar(450) NULL,
+    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AspNetUsers_Spel_Spel] FOREIGN KEY ([Spel]) REFERENCES [Spel] ([ID]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_AspNetUsers_Spel_SpelID] FOREIGN KEY ([SpelID]) REFERENCES [Spel] ([ID]) ON DELETE CASCADE
 );
 
 GO
@@ -126,13 +141,34 @@ CREATE UNIQUE INDEX [UserNameIndex] ON [AspNetUsers] ([NormalizedUserName]) WHER
 
 GO
 
-INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20220106132825_InitDb', N'3.1.22');
+CREATE INDEX [IX_AspNetUsers_Spel] ON [AspNetUsers] ([Spel]);
+
+GO
+
+CREATE INDEX [IX_AspNetUsers_SpelID] ON [AspNetUsers] ([SpelID]);
 
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20220107142601_IdentityMovedTo_ReversiDbIdentityContext', N'3.1.22');
+VALUES (N'20220214152803_InitDb', N'3.1.22');
+
+GO
+
+ALTER TABLE [AspNetUsers] ADD [Kleur] int NOT NULL DEFAULT 0;
+
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20220222150234_AddedProperty_Speler_Kleur', N'3.1.22');
+
+GO
+
+ALTER TABLE [Spel] ADD [Afgelopen] bit NOT NULL DEFAULT CAST(0 AS bit);
+
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20220302175219_Added_Spel_Afgelopen_Bool', N'3.1.22');
 
 GO
 

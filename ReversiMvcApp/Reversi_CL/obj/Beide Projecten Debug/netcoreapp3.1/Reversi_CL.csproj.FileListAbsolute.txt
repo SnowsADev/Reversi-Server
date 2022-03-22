@@ -1,0 +1,10 @@
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\bin\Beide Projecten Debug\netcoreapp3.1\Reversi_CL.deps.json
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\bin\Beide Projecten Debug\netcoreapp3.1\Reversi_CL.dll
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\bin\Beide Projecten Debug\netcoreapp3.1\Reversi_CL.pdb
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Beide Projecten Debug\netcoreapp3.1\Reversi_CL.csproj.AssemblyReference.cache
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Beide Projecten Debug\netcoreapp3.1\Reversi_CL.GeneratedMSBuildEditorConfig.editorconfig
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Beide Projecten Debug\netcoreapp3.1\Reversi_CL.AssemblyInfoInputs.cache
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Beide Projecten Debug\netcoreapp3.1\Reversi_CL.AssemblyInfo.cs
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Beide Projecten Debug\netcoreapp3.1\Reversi_CL.csproj.CoreCompileInputs.cache
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Beide Projecten Debug\netcoreapp3.1\Reversi_CL.dll
+E:\Reversi-Server\ReversiMvcApp\Reversi_CL\obj\Beide Projecten Debug\netcoreapp3.1\Reversi_CL.pdb

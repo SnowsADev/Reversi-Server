@@ -1,5 +1,6 @@
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\appsettings.Development.json
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\appsettings.json
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\libman.json
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\ReversiMvcApp.StaticWebAssets.xml
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\ReversiMvcApp.exe
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\ReversiMvcApp.deps.json
@@ -271,6 +272,7 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\refs\Syste
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\refs\WindowsBase.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\ReversiMvcApp.Views.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\ReversiMvcApp.Views.pdb
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.Certificate.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Cryptography.Internal.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll
@@ -400,6 +402,8 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\runtimes\w
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\Reversi_CL.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\Reversi_CL.pdb
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.csproj.AssemblyReference.cache
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.GeneratedMSBuildEditorConfig.editorconfig
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.AssemblyInfoInputs.cache
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.AssemblyInfo.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.csproj.CoreCompileInputs.cache
@@ -452,6 +456,8 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Area
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ValidationScriptsPartial.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ViewImports.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ViewStart.cshtml.g.cs
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Administration\CreateRole.cshtml.g.cs
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Administration\Index.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Home\Index.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Home\Privacy.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Shared\Error.cshtml.g.cs
@@ -465,6 +471,7 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\View
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spelers\Index.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Create.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Delete.cshtml.g.cs
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Details.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Edit.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Index.cshtml.g.cs
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\_ViewImports.cshtml.g.cs
@@ -476,7 +483,5 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvc
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.pdb
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.genruntimeconfig.cache
-E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Spellen\Details.cshtml.g.cs
-E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\libman.json
-E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.csproj.AssemblyReference.cache
-E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\ReversiMvcApp.GeneratedMSBuildEditorConfig.editorconfig
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Administration\EditRole.cshtml.g.cs
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\Razor\Views\Administration\EditUsersInRole.cshtml.g.cs

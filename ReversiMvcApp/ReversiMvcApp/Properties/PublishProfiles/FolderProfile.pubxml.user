@@ -5,14 +5,14 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\publish\</_PublishTargetUrl>
-    <History>True|2022-01-07T13:16:23.9398749Z;True|2022-01-07T14:15:34.8244094+01:00;</History>
+    <History>True|2022-03-08T11:44:13.0450571Z;True|2022-03-08T12:42:01.2672542+01:00;True|2022-03-08T12:39:00.6835691+01:00;True|2022-03-07T15:53:16.5889652+01:00;True|2022-03-07T15:53:01.6197481+01:00;True|2022-03-07T10:25:55.0624210+01:00;False|2022-03-07T10:24:44.6495718+01:00;False|2022-03-07T10:22:57.2724122+01:00;False|2022-03-07T10:22:40.2250345+01:00;True|2022-01-07T14:16:23.9398749+01:00;True|2022-01-07T14:15:34.8244094+01:00;</History>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
   </PropertyGroup>
   <ItemGroup>
-    <EFMigrations Include="ReversiMvcApp.Data.ReversiDbContext.ReversiDbContext">
+    <EFMigrations Include="Reversi_CL.Data.ReversiDbContext.ReversiDbContext">
       <Value>Server=%28localdb%29\mssqllocaldb%3bDatabase=reversiDb%3bTrusted_Connection=True%3bMultipleActiveResultSets=true</Value>
     </EFMigrations>
-    <EFMigrations Include="ReversiMvcApp.Data.ReversiDbIdentityContext.ReversiDbIdentityContext">
+    <EFMigrations Include="Reversi_CL.Data.ReversiDbIdentityContext.ReversiDbIdentityContext">
       <Value>Server=%28localdb%29\mssqllocaldb%3bDatabase=reversiDb%3bTrusted_Connection=True%3bMultipleActiveResultSets=true</Value>
     </EFMigrations>
   </ItemGroup>

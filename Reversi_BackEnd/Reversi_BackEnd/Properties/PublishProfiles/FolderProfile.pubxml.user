@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>E:\Reversi-Server\Reversi_BackEnd\Reversi_BackEnd\bin\Debug\netcoreapp3.1\publish\</_PublishTargetUrl>
+    <History>True|2022-03-07T09:33:44.9683108Z;</History>
+  </PropertyGroup>
+  <ItemGroup>
+    <EFMigrations Include="Reversi_CL.Data.ReversiDbContext.ReversiDbContext">
+      <Value>
+      </Value>
+    </EFMigrations>
+    <EFMigrations Include="Reversi_CL.Data.ReversiDbIdentityContext.ReversiDbIdentityContext">
+      <Value>
+      </Value>
+    </EFMigrations>
+  </ItemGroup>
+</Project>

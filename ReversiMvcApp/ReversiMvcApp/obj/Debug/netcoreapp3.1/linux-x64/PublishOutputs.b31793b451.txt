@@ -1,6 +1,11 @@
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\ReversiMvcApp
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\css\site.css
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\css\style.css
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\favicon.ico
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\images\btn_close.png
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\images\Error_Icon.png
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\images\Succes_Icon.png
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\js\app.js
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\js\site.js
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
@@ -35,8 +40,14 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\lib\jquery\dist\jquery.min.js
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\lib\jquery\dist\jquery.min.map
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\lib\jquery\LICENSE.txt
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\lib\require.js\require.js
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\lib\require.js\require.min.js
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\lib\require.js\require.min.js.map
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\lib\signalr\signalr.js
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\wwwroot\lib\signalr\signalr.min.js
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\appsettings.Development.json
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\appsettings.json
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\libman.json
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\refs\Microsoft.AspNetCore.Antiforgery.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\refs\Microsoft.AspNetCore.Authentication.Abstractions.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\refs\Microsoft.AspNetCore.Authentication.Cookies.dll
@@ -305,6 +316,7 @@ E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\ReversiMvcApp.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\ReversiMvcApp.runtimeconfig.json
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\ReversiMvcApp.pdb
+E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\Microsoft.AspNetCore.Authentication.Certificate.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\Microsoft.AspNetCore.Cryptography.Internal.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\obj\Debug\netcoreapp3.1\linux-x64\PubTmp\Out\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll

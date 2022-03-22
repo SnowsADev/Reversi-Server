@@ -6,8 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Reversi_CL.Data;
 using Reversi_CL.Data.ReversiDbContext;
 using Reversi_CL.Data.ReversiDbIdentityContext;
+using Reversi_CL.Interfaces;
 using Reversi_CL.Models;
 using System;
 using System.Collections.Generic;
@@ -40,6 +42,7 @@ namespace Reversi_BackEnd
                 options.UseSqlServer(
                     Configuration.GetConnectionString("ReversiConnection")));
 
+            services.AddSingleton<ISpelRepository, SpelAccessLayer>();
             services.AddControllersWithViews();
         }
 

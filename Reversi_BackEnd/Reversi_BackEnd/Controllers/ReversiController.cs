@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Reversi_CL.Data.ReversiDbContext;
 using Reversi_CL.Helpers;
+using Reversi_CL.Interfaces;
 using Reversi_CL.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,21 +24,13 @@ namespace Reversi_BackEnd.Controllers
                 } 
             };
         
-        private readonly ReversiDbContext _context;
+        private readonly ISpelRepository _spelAccessLayer;
 
-        public ReversiController(ReversiDbContext context)
+        public ReversiController(ISpelRepository spelAccessLayer)
         {
-            _context = context;
-            
+            this._spelAccessLayer = spelAccessLayer;
         }
 
-        private Spel GetSpelByToken(string spelToken)
-        {
-            return  _context.Spellen
-                .Include(spel => spel.Spelers)
-                .Where(spel => spel.ID == spelToken)
-                .FirstOrDefault();
-        }
 
         // api/Spel/<Token> - GET
         // - Omschrijving
@@ -46,9 +39,9 @@ namespace Reversi_BackEnd.Controllers
         // - Wie er aan de beurt is
         // - Status van het spel (bijv. De winnaar, opgeven door)
         [HttpGet("/Api/Spel/{spelToken}")]
-        public IActionResult GetSpel([FromRoute] string spelToken)
+        public IActionResult GetSpel([FromRoute] string spelId)
         {
-            Spel spel = GetSpelByToken(spelToken);
+            Spel spel = _spelAccessLayer.GetSpel(spelId);
 
             if (spel == null)
             {
@@ -63,7 +56,7 @@ namespace Reversi_BackEnd.Controllers
         [HttpPost("/Api/Spel/Pass")]
         public IActionResult SlaBeurtOver([FromBody] SlaBeurtOverDTO dto)
         {
-            Spel spel = GetSpelByToken(dto.SpelId);
+            Spel spel = _spelAccessLayer.GetSpel(dto.SpelId);
 
             //Spel bestaat niet
             if (spel == null) return NotFound();
@@ -75,8 +68,7 @@ namespace Reversi_BackEnd.Controllers
             }
 
             spel.Pas();
-            _context.Update(spel);
-            _context.SaveChanges();
+            _spelAccessLayer.EditSpel(spel);
 
             return GetSpel(dto.SpelId);
         }
@@ -92,31 +84,16 @@ namespace Reversi_BackEnd.Controllers
         // Api/Spel/Beurt - GET
         // Opvragen wie er aan de beurt is.
         [HttpGet("/Api/Spel/Beurt")]
-        public IActionResult GetAandeBeurt([FromRoute] string spelToken)
+        public IActionResult GetAandeBeurt([FromRoute] string spelId)
         {
-            
-            Spel spel = GetSpelByToken(spelToken);
+            Spel spel = _spelAccessLayer.GetSpel(spelId);
 
             if (spel == null)
             {
                 return BadRequest();
             }
 
-
             return Ok(spel.AandeBeurt);
-        }
-
-        [HttpPost("/Api/Spel/ResetBord")]
-        public IActionResult ResetBord([FromQuery] string spelToken)
-        {
-            Spel spel = GetSpelByToken(spelToken);
-
-            spel.ResetBord();
-
-            _context.Spellen.Update(spel);
-            _context.SaveChanges();
-
-            return Ok();
         }
 
         //Api/Spel/Zet - PUT
@@ -125,20 +102,18 @@ namespace Reversi_BackEnd.Controllers
         [HttpPut("/Api/Spel/Zet")]
         public IActionResult MaakZet([FromBody] MaakZetDTO dto)
         {
-            Spel spel = GetSpelByToken(dto.SpelToken);
+            Spel spel = _spelAccessLayer.GetSpel(dto.SpelerToken);
 
             if (spel.DoeZet(dto.RijZet, dto.KolomZet))
             {
-                _context.Spellen.Update(spel);
-                _context.SaveChanges();
+                _spelAccessLayer.EditSpel(spel);
 
                 return GetSpel(dto.SpelToken);
             }
 
             if (spel.SpelIsAfgelopen)
             {
-                _context.Spellen.Update(spel);
-                _context.SaveChanges();
+                _spelAccessLayer.EditSpel(spel);
                 return GetSpel(dto.SpelToken);
             }
 
@@ -157,21 +132,20 @@ namespace Reversi_BackEnd.Controllers
         // Api/Spel/Opgeven - PUT
         // Hiermee geeft de speler op
         [HttpPut("Api/Spel/Opgeven")]
-        public async Task<ActionResult> GeefOp([FromBody] GeefOpDTO dto)
+        public ActionResult GeefOp([FromBody] GeefOpDTO dto)
         {
-            Spel spel = GetSpelByToken(dto.SpelId);
+            Spel spel = _spelAccessLayer.GetSpel(dto.SpelId);
             spel.SpelIsAfgelopen = true;
 
-            _context.Update(spel);
-            await _context.SaveChangesAsync();
-            
+            _spelAccessLayer.EditSpel(spel);
+
             return Ok();
         }
 
         public class GeefOpDTO
         {
             public string SpelId { get; set; }
-            public string spelerId { get; set; }
+            public string SpelerId { get; set; }
         }
     }
 }

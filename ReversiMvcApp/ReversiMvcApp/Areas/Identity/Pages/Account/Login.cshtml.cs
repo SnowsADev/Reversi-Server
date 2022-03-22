@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ReversiMvcApp.Models;
 using Reversi_CL.Models;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace ReversiMvcApp.Areas.Identity.Pages.Account
 {
@@ -81,9 +82,18 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                SignInResult result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                
+
                 if (result.Succeeded)
                 {
+
+                    if ((await _userManager.FindByEmailAsync(Input.Email)).IsEnabled)
+                    {
+                        ModelState.AddModelError(string.Empty, "This account has been disabled.");
+                        return Page();
+                    }
+
                     _logger.LogInformation("User logged in.");
 
                     return LocalRedirect(returnUrl);

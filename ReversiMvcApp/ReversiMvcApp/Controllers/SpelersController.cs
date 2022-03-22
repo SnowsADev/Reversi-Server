@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Reversi_CL.Data;
 using Reversi_CL.Data.ReversiDbIdentityContext;
 using Reversi_CL.Models;
 using System.Linq;
@@ -8,20 +9,20 @@ using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Mediator")]
     public class SpelersController : Controller
     {
-        private readonly ReversiDbIdentityContext _context;
+        private readonly UserAccessLayer _userAccessLayer;
 
-        public SpelersController(ReversiDbIdentityContext context)
+        public SpelersController(UserAccessLayer userAccessLayer)
         {
-            _context = context;
+            this._userAccessLayer = userAccessLayer;
         }
 
         // GET: Spelers
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Spelers.ToListAsync());
+            return View(_userAccessLayer.GetUsersAsList());
         }
 
         // GET: Spelers/Details/5
@@ -32,8 +33,8 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            var speler = await _context.Spelers
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Speler speler = await _userAccessLayer.GetUserAsync(id);
+
             if (speler == null)
             {
                 return NotFound();
@@ -57,10 +58,10 @@ namespace ReversiMvcApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(speler);
-                await _context.SaveChangesAsync();
+                await _userAccessLayer.CreateUserAsync(speler);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(speler);
         }
 
@@ -72,12 +73,14 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            var speler = await _context.Spelers.FindAsync(id);
-            if (speler == null)
+            Speler user = await _userAccessLayer.GetUserAsync(id);
+
+            if (user == null)
             {
                 return NotFound();
             }
-            return View(speler);
+
+            return View(user);
         }
 
         // POST: Spelers/Edit/5
@@ -94,22 +97,8 @@ namespace ReversiMvcApp.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(speler);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SpelerExists(speler.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _userAccessLayer.UpdateUserAsync(speler);
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(speler);
@@ -118,17 +107,9 @@ namespace ReversiMvcApp.Controllers
         // GET: Spelers/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            Speler speler = await _userAccessLayer.GetUserAsync(id);
 
-            var speler = await _context.Spelers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (speler == null)
-            {
-                return NotFound();
-            }
+            if (speler == null) return NotFound();
 
             return View(speler);
         }
@@ -138,15 +119,12 @@ namespace ReversiMvcApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var speler = await _context.Spelers.FindAsync(id);
-            _context.Spelers.Remove(speler);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            Speler speler = await _userAccessLayer.GetUserAsync(id);
 
-        private bool SpelerExists(string id)
-        {
-            return _context.Spelers.Any(e => e.Id == id);
+            if (speler == null) return NotFound();
+
+            await _userAccessLayer.DeleteUserAsync(speler);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

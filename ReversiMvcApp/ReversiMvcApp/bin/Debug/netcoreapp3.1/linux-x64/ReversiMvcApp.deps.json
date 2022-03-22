@@ -31,10 +31,12 @@
     ".NETCoreApp,Version=v3.1": {
       "ReversiMvcApp/1.0.0": {
         "dependencies": {
+          "Microsoft.AspNetCore.Authentication.Certificate": "3.1.22",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "3.1.22",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.22",
           "Microsoft.AspNetCore.Identity.UI": "3.1.22",
           "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "3.1.22",
+          "Microsoft.EntityFrameworkCore.Design": "3.1.22",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.22",
           "Microsoft.EntityFrameworkCore.Tools": "3.1.22",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.1.5",
@@ -1614,6 +1616,11 @@
       "WindowsBase/4.0.0.0": {
         "compile": {
           "WindowsBase.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Certificate/3.1.22": {
+        "compile": {
+          "lib/netcoreapp3.1/Microsoft.AspNetCore.Authentication.Certificate.dll": {}
         }
       },
       "Microsoft.AspNetCore.Cryptography.Internal/3.1.22": {
@@ -3243,7 +3250,8 @@
       },
       "Reversi_CL/1.0.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.22"
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.22",
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.1.22"
         },
         "compile": {
           "Reversi_CL.dll": {}
@@ -3253,10 +3261,12 @@
     ".NETCoreApp,Version=v3.1/linux-x64": {
       "ReversiMvcApp/1.0.0": {
         "dependencies": {
+          "Microsoft.AspNetCore.Authentication.Certificate": "3.1.22",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "3.1.22",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.22",
           "Microsoft.AspNetCore.Identity.UI": "3.1.22",
           "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "3.1.22",
+          "Microsoft.EntityFrameworkCore.Design": "3.1.22",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.22",
           "Microsoft.EntityFrameworkCore.Tools": "3.1.22",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.1.5",
@@ -3526,6 +3536,14 @@
         },
         "runtime": {
           "ReversiMvcApp.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Certificate/3.1.22": {
+        "runtime": {
+          "lib/netcoreapp3.1/Microsoft.AspNetCore.Authentication.Certificate.dll": {
+            "assemblyVersion": "3.1.22.0",
+            "fileVersion": "3.100.2221.57904"
+          }
         }
       },
       "Microsoft.AspNetCore.Cryptography.Internal/3.1.22": {
@@ -5532,7 +5550,8 @@
       },
       "Reversi_CL/1.0.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.22"
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.22",
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.1.22"
         },
         "runtime": {
           "Reversi_CL.dll": {}
@@ -5545,6 +5564,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Microsoft.AspNetCore.Authentication.Certificate/3.1.22": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qOSLNhswJVPsMxxD3qUtr5Ip8RSUf4Ia6QXkk1EpPl9RPoatH81Y0PDzlrAasgDXpUuA9Hpc3yWTwQXmYSl3jQ==",
+      "path": "microsoft.aspnetcore.authentication.certificate/3.1.22",
+      "hashPath": "microsoft.aspnetcore.authentication.certificate.3.1.22.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Cryptography.Internal/3.1.22": {
       "type": "package",
