@@ -5,12 +5,13 @@ using Reversi_CL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Reversi_CL.Data
 {
-    public class UserAccessLayer : IUserRepository<Speler>
+    public class UserAccessLayer : IUserRepository
     {
         private readonly ReversiDbIdentityContext.ReversiDbIdentityContext _identityContext;
         private readonly UserManager<Speler> _userManager;
@@ -41,6 +42,12 @@ namespace Reversi_CL.Data
             _identityContext.Update(user);
             return _identityContext.SaveChangesAsync();
         }
+
+        public Task<Speler> GetUserAsync(ClaimsPrincipal user)
+        {
+            return _userManager.GetUserAsync(user);
+        }
+
 
         public Speler GetUser(string userId)
         {

@@ -6,8 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\ReversiDbContext\Migrations\20220322141855_SeedData_Users_Roles_UserRoles.cs" />
+    <Compile Remove="Data\ReversiDbContext\Migrations\20220322141855_SeedData_Users_Roles_UserRoles.Designer.cs" />
+    <Compile Remove="Data\ReversiDbIdentityContext\Migrations\20220322140357_SeedData_Users_Roles_UserRoles.cs" />
+    <Compile Remove="Data\ReversiDbIdentityContext\Migrations\20220322140357_SeedData_Users_Roles_UserRoles.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.22" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\SeedData\" />
   </ItemGroup>
 
 </Project>

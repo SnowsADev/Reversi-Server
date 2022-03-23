@@ -29,15 +29,16 @@ namespace ReversiMvcApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
+
             services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
                 .AddCertificate();
 
             services.AddDbContext<ReversiDbIdentityContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("ReversiIdentityConnection")));
+                    Configuration.GetConnectionString("ReversiConnection")));
 
             services.AddIdentity<Speler, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ReversiDbIdentityContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
@@ -52,8 +53,10 @@ namespace ReversiMvcApp
             services.AddRazorPages();
             services.AddSignalR();
 
-            services.AddSingleton<ISpelRepository, SpelAccessLayer>();
-            services.AddSingleton<IUserRepository<Speler>, UserAccessLayer>();
+            services.AddScoped<ISpelRepository, SpelAccessLayer>();
+            services.AddScoped<IUserRepository, UserAccessLayer>();
+            //services.AddTransient(typeof(IUserRepository<>), typeof(UserAccessLayer));
+            //services.AddScoped<IUserRepository, UserAccessLayer>();
 
             //services.Configure<ForwardedHeadersOptions>(options =>
             //{
@@ -110,7 +113,7 @@ namespace ReversiMvcApp
 
                 endpoints.MapRazorPages();
                 endpoints.MapHub<SpelHub>("/spelHub");
-                
+
             });
         }
     }

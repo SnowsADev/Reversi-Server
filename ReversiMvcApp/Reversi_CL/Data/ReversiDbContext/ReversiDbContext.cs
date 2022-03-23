@@ -41,43 +41,5 @@ namespace Reversi_CL.Data.ReversiDbContext
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
         }
-
-        //public override int SaveChanges()
-        //{
-        //    OnBeforeSaving();
-        //    return base.SaveChanges();
-        //}
-
-        //public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        //{
-        //    OnBeforeSaving();
-        //    return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        //}
-
-        //private void OnBeforeSaving()
-        //{
-        //    foreach (var entry in ChangeTracker.Entries())
-        //    {
-        //        switch (entry.State)
-        //        {
-        //            case EntityState.Modified:
-        //                if (entry.Entity.GetType() == typeof(Spel))
-        //                {
-        //                    GameFinished((Spel)entry.Entity);
-        //                }
-        //                break;
-        //        }
-        //    }
-        //}
-
-        //private void GameFinished(Spel spel)
-        //{
-        //    if (spel.SpelIsAfgelopen)
-        //    {
-
-        //    }
-        //}
-
-
     }
 }

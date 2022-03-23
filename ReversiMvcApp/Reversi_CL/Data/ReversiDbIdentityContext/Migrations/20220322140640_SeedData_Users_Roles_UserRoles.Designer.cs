@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reversi_CL.Data.ReversiDbIdentityContext;
 
 namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
 {
     [DbContext(typeof(ReversiDbIdentityContext))]
-    partial class ReversiDbIdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20220322140640_SeedData_Users_Roles_UserRoles")]
+    partial class SeedData_Users_Roles_UserRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

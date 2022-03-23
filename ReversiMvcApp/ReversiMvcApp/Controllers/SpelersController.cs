@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Reversi_CL.Data;
 using Reversi_CL.Data.ReversiDbIdentityContext;
+using Reversi_CL.Interfaces;
 using Reversi_CL.Models;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,9 +13,9 @@ namespace ReversiMvcApp.Controllers
     [Authorize(Roles = "Admin,Mediator")]
     public class SpelersController : Controller
     {
-        private readonly UserAccessLayer _userAccessLayer;
+        private readonly IUserRepository _userAccessLayer;
 
-        public SpelersController(UserAccessLayer userAccessLayer)
+        public SpelersController(IUserRepository userAccessLayer)
         {
             this._userAccessLayer = userAccessLayer;
         }

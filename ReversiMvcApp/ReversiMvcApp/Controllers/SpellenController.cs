@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Reversi_CL.Data;
 using Reversi_CL.Data.ReversiDbContext;
+using Reversi_CL.Interfaces;
 using Reversi_CL.Models;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,13 @@ namespace ReversiMvcApp.Controllers
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public class SpellenController : Controller
     {
-        private readonly ReversiDbContext _context;
-        private readonly UserManager<Speler> _userManager;
-        private readonly SpelAccessLayer _spelAccessLayer;
+        private readonly ISpelRepository _spelAccessLayer;
+        private readonly IUserRepository _userAccessLayer;
 
-        public SpellenController(SpelAccessLayer DAL)
+        public SpellenController(ISpelRepository spelAccessLayer, IUserRepository userAccessLayer)
         {
-            _spelAccessLayer = DAL;
+            _spelAccessLayer = spelAccessLayer;
+            _userAccessLayer = userAccessLayer;
         }
 
         // GET: Spellen
@@ -32,7 +33,8 @@ namespace ReversiMvcApp.Controllers
         {
             //ToDo ViewModel maken
 
-            Speler currentUser = await _userManager.GetUserAsync(User);
+
+            Speler currentUser = await _userAccessLayer.GetUserAsync(User);
 
             bool bSpelerInSpel = _spelAccessLayer.SpelerIsInSpel(currentUser);
             ViewData["bSpelerInSpel"] = bSpelerInSpel;
@@ -61,7 +63,7 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            Speler currentUser = await _userManager.GetUserAsync(User);
+            Speler currentUser = await _userAccessLayer.GetUserAsync(User);
 
             if (!spel.Spelers.Any(Speler => Speler.Id == currentUser.Id))
             {
@@ -78,7 +80,8 @@ namespace ReversiMvcApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            Speler currentUser = await _userManager.GetUserAsync(User);
+
+            Speler currentUser = await _userAccessLayer.GetUserAsync(User);
 
             if (_spelAccessLayer.SpelerIsInSpel(currentUser))
             {
@@ -97,7 +100,7 @@ namespace ReversiMvcApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                Speler currentUser = await _userManager.GetUserAsync(User);
+                Speler currentUser = await _userAccessLayer.GetUserAsync(User);
 
                 // User zit al in spel
                 if (_spelAccessLayer.SpelerIsInSpel(currentUser))
@@ -106,7 +109,7 @@ namespace ReversiMvcApp.Controllers
                 }
 
                 currentUser.Kleur = Kleur.Zwart;
-                await _userManager.UpdateAsync(currentUser);
+                await _userAccessLayer.UpdateUserAsync(currentUser);
                 
                 spel.Spelers = new List<Speler>() { currentUser };
 
@@ -196,7 +199,7 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            Speler currentSpeler = await _userManager.GetUserAsync(User);
+            Speler currentSpeler = await _userAccessLayer.GetUserAsync(User);
 
             _spelAccessLayer.AddSpelerToSpel(spel, currentSpeler);
 

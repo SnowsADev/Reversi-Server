@@ -15,12 +15,10 @@ namespace Reversi_CL.Data
         private readonly ReversiDbContext.ReversiDbContext _reversiContext;
         private readonly UserManager<Speler> _userManager;
 
-        public SpelAccessLayer(ReversiDbContext.ReversiDbContext reversiContext, 
-                            ReversiDbIdentityContext.ReversiDbIdentityContext reversiIdentityContext,
-                            UserManager<Speler> userManager)
+        public SpelAccessLayer(ReversiDbContext.ReversiDbContext reversiContext, UserManager<Speler> userManager)
         {
-            this._reversiContext = reversiContext;
-            this._userManager = userManager;
+            _reversiContext = reversiContext;
+            _userManager = userManager;
         }
 
         public void AddSpelerToSpel(Spel spel, Speler speler)

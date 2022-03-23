@@ -30,6 +30,15 @@
                         <li>
                             <a class="nav-link text-dark" asp-area="" asp-controller="Spellen" asp-action="Index">Spellen</a>
                         </li>
+                        @if (User.IsInRole("Mediator") || User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Administration" asp-action="Index">Rollen</a>
+                            </li>
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Spelers" asp-action="Index">Users</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

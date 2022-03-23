@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reversi_CL.Data.ReversiDbIdentityContext;
 
 namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
 {
     [DbContext(typeof(ReversiDbIdentityContext))]
-    partial class ReversiDbIdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20220322100944_Accounts_IsEnabled_Property")]
+    partial class Accounts_IsEnabled_Property
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,29 +46,6 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "44f80e14-9ca1-48db-b6cc-2a3153d01657",
-                            ConcurrencyStamp = "a7c919cc-b5c8-4702-91ce-94fdb51762fe",
-                            Name = "Mediator",
-                            NormalizedName = "MEDIATOR"
-                        },
-                        new
-                        {
-                            Id = "512a1ac9-a17e-4602-a200-bf9e0ac10a6c",
-                            ConcurrencyStamp = "b8aca75b-d513-4eab-b374-bb84cc7acafe",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "d4297ca9-77fe-496f-a148-7c7232811f85",
-                            ConcurrencyStamp = "a7d902e5-96c6-4985-8004-c6701ada706c",
-                            Name = "Speler",
-                            NormalizedName = "SPELER"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -152,23 +131,6 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "60c35514-e6cf-47f4-84ad-8b010ce0b7b4",
-                            RoleId = "512a1ac9-a17e-4602-a200-bf9e0ac10a6c"
-                        },
-                        new
-                        {
-                            UserId = "a5b07a52-c6e0-4dab-8a28-42c038e0cbb7",
-                            RoleId = "44f80e14-9ca1-48db-b6cc-2a3153d01657"
-                        },
-                        new
-                        {
-                            UserId = "c7d9dd9f-99bc-422f-8f7f-0828c45acf68",
-                            RoleId = "d4297ca9-77fe-496f-a148-7c7232811f85"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -305,74 +267,6 @@ namespace Reversi_CL.Data.ReversiDbIdentityContext.Migrations
                     b.HasIndex("SpelID");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "60c35514-e6cf-47f4-84ad-8b010ce0b7b4",
-                            AantalGelijk = 0,
-                            AantalGewonnen = 0,
-                            AantalVerloren = 0,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "4b36a5cc-3022-42a2-81da-74866c69d0b6",
-                            Email = "admin@reversi.nl",
-                            EmailConfirmed = true,
-                            IsEnabled = true,
-                            Kleur = 0,
-                            LockoutEnabled = false,
-                            Naam = "Admin Bram",
-                            NormalizedEmail = "ADMIN@REVERSI.NL",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHYggDbPjVt3bc3HHLkCpcc0SXMKwlwnmJmhGZxFqb681ce6tocmGk3en3L5iQNdjg==",
-                            PhoneNumber = "12345678",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "0517346c-8db1-441d-904f-61d6d7ed4881",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@reversi.nl"
-                        },
-                        new
-                        {
-                            Id = "a5b07a52-c6e0-4dab-8a28-42c038e0cbb7",
-                            AantalGelijk = 0,
-                            AantalGewonnen = 0,
-                            AantalVerloren = 0,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "dcc2b7bf-a4ad-48a8-bcab-ae9532104d41",
-                            Email = "mediator@reversi.nl",
-                            EmailConfirmed = true,
-                            IsEnabled = true,
-                            Kleur = 0,
-                            LockoutEnabled = false,
-                            Naam = "Mediator Bram",
-                            NormalizedEmail = "MEDIATOR@REVERSI.NL",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJWTSg+cmFGMA37KKkYxZea4SR1QOv6999S0x7WpJ20dh9p6MY3u2qHXIXeZRE4TQg==",
-                            PhoneNumber = "12345678",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "36408ffa-ab1a-4122-b762-b8e3662798d6",
-                            TwoFactorEnabled = false,
-                            UserName = "mediator@reversi.nl"
-                        },
-                        new
-                        {
-                            Id = "c7d9dd9f-99bc-422f-8f7f-0828c45acf68",
-                            AantalGelijk = 0,
-                            AantalGewonnen = 0,
-                            AantalVerloren = 0,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "6a2e7ed7-5eab-44a2-89f1-8f1b5ed17057",
-                            Email = "speler@reversi.nl",
-                            EmailConfirmed = true,
-                            IsEnabled = true,
-                            Kleur = 0,
-                            LockoutEnabled = false,
-                            Naam = "Bram",
-                            NormalizedEmail = "SPELER@REVERSI.NL",
-                            PasswordHash = "AQAAAAEAACcQAAAAENRMKds7/9Kc0jQjUIOTLO3ZTgN2MGJHM6GLXEmhOHvWsgFzN6w0dqmlPAAYH5QuvA==",
-                            PhoneNumber = "12345678",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "b28d0fa0-4f8a-456b-944c-bf2a61a96fda",
-                            TwoFactorEnabled = false,
-                            UserName = "speler@reversi.nl"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
