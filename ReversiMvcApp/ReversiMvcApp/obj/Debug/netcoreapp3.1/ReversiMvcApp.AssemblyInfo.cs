@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ReversiMvcApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dbeb97acea2898cd6915a2763b9194f20788ede6")]
 [assembly: System.Reflection.AssemblyProductAttribute("ReversiMvcApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ReversiMvcApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

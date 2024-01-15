@@ -1,6 +1,10 @@
-﻿@model Reversi_CL.Models.Speler
+﻿@using Microsoft.AspNetCore.Identity;
+@model ReversiMvcApp.Models.ViewModels.Speler.EditSpelerViewModel;
+
+@inject UserManager<Speler> UserManager
 
 @{
+
     ViewData["Title"] = "Edit";
 }
 
@@ -19,27 +23,57 @@
                 <span asp-validation-for="Naam" class="text-danger col-sm-12"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AantalGewonnen" class="control-label"></label>
-                <input asp-for="AantalGewonnen" class="form-control" />
-                <span asp-validation-for="AantalGewonnen" class="text-danger"></span>
+                <label asp-for="Password" class="control-label col-sm-2"></label>
+                <input type="password" asp-for="Password" class="form-control col-sm-10" />
+                <span asp-validation-for="Password" class="text-danger col-sm-12"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="AantalVerloren" class="control-label"></label>
-                <input asp-for="AantalVerloren" class="form-control" />
-                <span asp-validation-for="AantalVerloren" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AantalGelijk" class="control-label"></label>
-                <input asp-for="AantalGelijk" class="form-control" />
-                <span asp-validation-for="AantalGelijk" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-
-            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label col-sm-2"></label>
+                    <input type="email" asp-for="Email" class="form-control col-sm-10" />
+                    <span asp-validation-for="Email" class="text-danger col-sm-12"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label col-sm-2"></label>
+                    <input type="tel" asp-for="PhoneNumber" class="form-control col-sm-10" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger col-sm-12"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AantalGewonnen" class="control-label col-sm-2"></label>
+                    <input type="number" asp-for="AantalGewonnen" class="form-control col-sm-10" />
+                    <span asp-validation-for="AantalGewonnen" class="text-danger col-sm-12"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AantalGelijk" class="control-label col-sm-2"></label>
+                    <input type="number" asp-for="AantalGelijk" class="form-control col-sm-10" />
+                    <span asp-validation-for="AantalGelijk" class="text-danger col-sm-12"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AantalVerloren" class="control-label col-sm-2"></label>
+                    <input type="number" asp-for="AantalVerloren" class="form-control col-sm-10" />
+                    <span asp-validation-for="AantalVerloren" class="text-danger col-sm-12"></span>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="Email" />
+                <input type="hidden" asp-for="PhoneNumber" />
+                <input type="hidden" asp-for="AantalGewonnen" />
+                <input type="hidden" asp-for="AantalGelijk" />
+                <input type="hidden" asp-for="AantalVerloren" />
+            }
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <a class="btn btn-primary text-white" asp-action="Reset2FA" asp-route-id="@Model.Id">Reset 2FA</a>
+        <a class="btn btn-danger text-white" asp-action="DeactivateAccount" asp-route-id="@Model.Id">Gebruiker verbannen</a>
     </div>
 </div>
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Reversi_CL.Models.Spel>
+﻿@model IEnumerable<ReversiMvcApp.Models.Spel>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,9 +9,6 @@
 }
 
 @section Scripts {
-    <script type="text/javascript" src="~/lib/signalr/signalr.min.js"></script>
-    <script type="text/javascript" src="~/js/app.js"></script>
-
     <script type="text/javascript">
         "use strict";
 
@@ -29,14 +26,7 @@
 
             if (data.success === true) {
                 console.log('Success!')
-
-                return $.ajax({
-                    type: "POST",
-                    url: `/Spellen/JoinSpel/${data.spelID}`,
-                    contentType: "application/json; charset=utf-8",
-                    success: function()  { return console.log('123');}
-                    //dataType: "json",
-                });
+                window.location.href = "/spellen/details/" + data.spelID;
             }
             
         });
@@ -48,12 +38,14 @@
 
         //Send Join Request
         document.getElementById("TblSpellen").addEventListener("click", function (event) {
-            event.preventDefault();
             const isButton = event.target.className.includes("btn");
+            const bShouldIgnore = event.target.hasAttribute("skipButton");
 
-            if (!isButton) {
+            if (!isButton || bShouldIgnore) {
                 return;
             }
+
+            event.preventDefault();
 
             connection.invoke("SendJoinRequest", event.target.dataset.id, "@userId").catch(function (err) {
                 SPA.feedbackModule.toonErrorBericht(message);
@@ -104,7 +96,14 @@
                 <td>
                     @if (bSpelerIsInSpel)
                     {
-                        <a class="btn btn-primary text-light disabled" @*asp-action="Details" asp-route-id="@item.ID"*@>Doe mee!</a>
+                        if (item.ID == (string)ViewData["currentSpelId"])
+                        {
+                            <a class="btn btn-primary text-light" skipButton asp-action="Details" asp-route-id="@item.ID">Terug Naar Spel</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-primary text-light" disabled>Doe mee!</a>
+                        }
                     }
                     else
                     {

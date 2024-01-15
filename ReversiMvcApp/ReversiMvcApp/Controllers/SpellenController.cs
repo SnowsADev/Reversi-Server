@@ -1,16 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Reversi_CL.Data;
-using Reversi_CL.Data.ReversiDbContext;
-using Reversi_CL.Interfaces;
-using Reversi_CL.Models;
-using System;
+using ReversiMvcApp.Interfaces;
+using ReversiMvcApp.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Controllers
@@ -32,23 +25,26 @@ namespace ReversiMvcApp.Controllers
         public async Task<IActionResult> Index()
         {
             //ToDo ViewModel maken
-
-
             Speler currentUser = await _userAccessLayer.GetUserAsync(User);
 
             bool bSpelerInSpel = _spelAccessLayer.SpelerIsInSpel(currentUser);
             ViewData["bSpelerInSpel"] = bSpelerInSpel;
+            if (bSpelerInSpel)
+            {
+                Spel spel = _spelAccessLayer.GetOnafgerondeSpelBySpeler(currentUser);
+                ViewData["currentSpelId"] = spel.ID;
+            }
 
             var Spellen = _spelAccessLayer.GetLopendeSpellenAsList();
 
             ViewData["UserID"] = currentUser.Id;
             ViewData["UserNaam"] = currentUser.Naam;
 
+
             return View(Spellen);
         }
 
         // GET: Spellen/Details/5
-        [EnableCors("Policy_EnableJQuery")]
         public async Task<IActionResult> Details(string id)
         {
             if (id.Trim() == "" || id == null)
@@ -56,11 +52,11 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            Spel spel = _spelAccessLayer.GetSpel(id);
+            Spel spel = _spelAccessLayer.GetOnafgerondeSpel(id);
 
             if (spel == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
             Speler currentUser = await _userAccessLayer.GetUserAsync(User);
@@ -115,7 +111,7 @@ namespace ReversiMvcApp.Controllers
 
                 _spelAccessLayer.AddSpel(spel);
                 
-                Spel nieuwSpel = _spelAccessLayer.GetSpelWithSpeler(currentUser);
+                Spel nieuwSpel = _spelAccessLayer.GetOnafgerondeSpelBySpeler(currentUser);
 
                 return RedirectToAction(nameof(Details), new { id = nieuwSpel.ID });
 
@@ -132,7 +128,7 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            var spel = _spelAccessLayer.GetSpel(id);
+            var spel = _spelAccessLayer.GetOnafgerondeSpel(id);
 
             if (spel == null)
             {
@@ -147,7 +143,7 @@ namespace ReversiMvcApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("AandeBeurt,ID,Omschrijving,Token")] Spel spel)
+        public IActionResult Edit(string id, [Bind("AandeBeurt,ID,Omschrijving,Token")] Spel spel)
         {
             if (id != spel.ID)
             {
@@ -167,7 +163,7 @@ namespace ReversiMvcApp.Controllers
         [HttpGet]
         public IActionResult Delete(string id)
         {
-            var spel = _spelAccessLayer.GetSpel(id);
+            var spel = _spelAccessLayer.GetOnafgerondeSpel(id);
             
             if (spel == null)
             {
@@ -192,7 +188,7 @@ namespace ReversiMvcApp.Controllers
         [HttpPost, ActionName("joinspel")]
         public async Task<IActionResult> JoinSpel(string Id)
         {
-            Spel spel = _spelAccessLayer.GetSpel(Id);
+            Spel spel = _spelAccessLayer.GetOnafgerondeSpel(Id);
 
             if (spel == null)
             {
@@ -203,7 +199,7 @@ namespace ReversiMvcApp.Controllers
 
             _spelAccessLayer.AddSpelerToSpel(spel, currentSpeler);
 
-            return RedirectToAction(nameof(Details), "Spellen", new { id = Id });
+            return Ok();
         }
 
     }

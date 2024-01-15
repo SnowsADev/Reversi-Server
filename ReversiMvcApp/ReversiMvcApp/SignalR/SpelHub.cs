@@ -1,48 +1,42 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Reversi_CL.Models;
-using System;
-using System.Collections.Generic;
+using ReversiMvcApp.Models;
 using System.Linq;
 using System.Threading.Tasks;
-using Reversi_CL.Extensions;
+using ReversiMvcApp.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Reversi_CL.Data.ReversiDbContext;
-using Reversi_CL.Data.ReversiDbIdentityContext;
+using ReversiMvcApp.Data.Context;
+using ReversiMvcApp.Data;
+using ReversiMvcApp.Interfaces;
 
 namespace ReversiMvcApp.SignalR
 {
-    public class SpelHub : Hub
+    public class SpelHub : Hub, ISpelHub
     {
-        private readonly ReversiDbContext _reversiDbContext;
-        private readonly ReversiDbIdentityContext _reversiDbIdentityContext;
+        private readonly ISpelRepository _spelAccessLayer;
+        private readonly IUserRepository _userAccessLayer;
 
-        public SpelHub(ReversiDbContext reversiDbContext, ReversiDbIdentityContext reversiDbIdentityContext) : base()
+        public SpelHub(ISpelRepository spelRepository, IUserRepository userRepository) : base()
         {
-            _reversiDbContext = reversiDbContext;
-            _reversiDbIdentityContext = reversiDbIdentityContext;
+            _spelAccessLayer = spelRepository;
+            _userAccessLayer = userRepository;
         }
 
-        public async Task SendRefreshGameNotification(string userId, string spelID)
+        public async Task SendRefreshGameNotification(Spel spel)
         {
-            Spel spel = _reversiDbContext.Spellen
-                .Include(spel => spel.Spelers)
-                .FirstOrDefault(x => x.ID == spelID);
-
             if (spel == null)
             {
-                await SendErrorPopup(userId);
                 return;
             }
 
-            Speler target = spel.Spelers.FirstOrDefault(speler => speler.Id != userId);
-
-            if (target == null)
+            foreach (Speler speler in spel.Spelers)
             {
-                await SendErrorPopup(userId);
-                return;
+                await sendRefreshNoticiationToUser(speler.Id);
             }
+        }
 
-            await Clients.User(target.Id).SendAsync("ReceiveRefreshGameNotification");
+        private Task sendRefreshNoticiationToUser(string userId)
+        {
+            return Clients.User(userId).SendAsync("ReceiveRefreshGameNotification");
         }
 
         public async Task SendMessage(string user, string message)
@@ -52,11 +46,8 @@ namespace ReversiMvcApp.SignalR
 
         public async Task SendJoinRequest(string spelID, string spelerId)
         {
-            Spel spel = _reversiDbContext.Spellen
-                .Include(spel => spel.Spelers)
-                .FirstOrDefault(x => x.ID == spelID);
-
-            Speler speler = await _reversiDbIdentityContext.Spelers.FirstOrDefaultAsync(s => s.Id == spelerId);
+            Spel spel = _spelAccessLayer.GetOnafgerondeSpel(spelID);
+            Speler speler = _userAccessLayer.GetUser(spelerId);
 
             string message = $"{speler.Naam.FirstCharToUpper()} wil graag deelnemen aan je spel. Ga akkoord om door te gaan.";
             Speler target = spel.Spelers.FirstOrDefault();
@@ -70,32 +61,40 @@ namespace ReversiMvcApp.SignalR
             await Clients.User(target.Id).SendAsync("ReceiveJoinRequest", message, spelID, spelerId);
         }
 
-        public async Task SendJoinRequestResult(string spelId, string spelerId, bool isAccepted)
+        public async Task SendJoinRequestResult(string spelId, string targetId, bool isAccepted)
         {
-            Spel spel = _reversiDbContext.Spellen
-                .Include(spel => spel.Spelers)
-                .FirstOrDefault(x => x.ID == spelId);
+            Spel spel = _spelAccessLayer.GetOnafgerondeSpel(spelId);
 
             // Fail if game is not found
             if (spel == null)
             {
-                await SendErrorPopup(spelerId);
+                await SendErrorPopup(targetId);
                 return;
             }
 
             // Fail join request if denied
             if (!isAccepted)
             {
-                await SendErrorPopup(spelerId, $"U bent geweigerd voor het spel van {spel.Spelers.FirstOrDefault().Naam.FirstCharToUpper()}");
+                await SendErrorPopup(targetId, $"U bent geweigerd voor het spel van {spel.Spelers.FirstOrDefault().Naam.FirstCharToUpper()}");
                 return;
             }
 
-            await Clients.User(spelerId).SendAsync("ReceiveJoinRequestResult", $"{{ \"success\": true, \"spelID\": \"{spelId}\"}}");
+            _spelAccessLayer.AddSpelerToSpel(spel, _userAccessLayer.GetUser(targetId));
+
+            await Clients.User(targetId).SendAsync("ReceiveJoinRequestResult", $"{{ \"success\": true, \"spelID\": \"{spelId}\"}}");
+
+            //Get player that is already in the game, and have him refresh
+            Speler host = spel.Spelers.FirstOrDefault(speler => speler.Id != targetId);
+            if (host != null)
+            {
+                await sendRefreshNoticiationToUser(host.Id);
+            }
         }
 
         public async Task SendErrorPopup(string targetUser, string message = "Er is iets fout gegaan. Probeer het later opnieuw.")
         {
             await Clients.User(targetUser).SendAsync("ReceiveErrorMessage", message);
         }
+
     }
 }

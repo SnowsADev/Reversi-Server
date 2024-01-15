@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Reversi_CL.Models;
+using ReversiMvcApp.Interfaces;
 using ReversiMvcApp.Models;
 
 namespace ReversiMvcApp.Areas.Identity.Pages.Account.Manage
@@ -15,15 +15,18 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<Speler> _userManager;
         private readonly SignInManager<Speler> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly IUserRepository _userAccessLayer;
 
         public DeletePersonalDataModel(
             UserManager<Speler> userManager,
             SignInManager<Speler> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            IUserRepository userAccessLayer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _userAccessLayer = userAccessLayer;
         }
 
         [BindProperty]
@@ -68,9 +71,11 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            var result = await _userManager.DeleteAsync(user);
+            int result = await _userAccessLayer.DeleteUserAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
-            if (!result.Succeeded)
+            
+            //No changes made in the database
+            if (result == 0)
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleting user with ID '{userId}'.");
             }

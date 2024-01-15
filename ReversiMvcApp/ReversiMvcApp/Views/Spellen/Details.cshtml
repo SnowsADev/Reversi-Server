@@ -1,63 +1,49 @@
-﻿@model Reversi_CL.Models.Spel
+﻿@model ReversiMvcApp.Models.Spel
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env;
+
 
 @{
     ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+
     string userId = ViewData["UserID"].ToString();
 }
 
 @section Scripts {
-    <script type="text/javascript" src="~/lib/signalr/signalr.min.js"></script>
+    <!-- Swiper-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- ChartJs-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js "></script>
+
+    <!-- Custom Scripts-->
     <script type="text/javascript" src="~/js/app.js"></script>
+    <script type="text/javascript" src="~/js/vendor.js"></script>
+    <script type="text/javascript" src="~/js/templates.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="~/css/style.min.css">
+}
+
+<h2>U bent de kleur: @Model.Spelers.FirstOrDefault(s => s.Id == userId).Kleur</h2>
+<button class="btn btn-primary">geef op</button>
 
 
-    <script type="text/javascript">
-        "use strict";
+<div id="everything">
+    <aside id="swiper-container" class="swiper"></aside>
+    <div id="main-content"></div>
+    <aside id="charts-container"></aside>
+</div>
 
-        $(document).ready(function () {
-            //var connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();
 
-            //connection.on("ReceiveJoinRequest", function (message, spelId, spelerId) {
-            //    let data = {
-            //        spelerId, spelerId,
-            //        spelId: spelId
-            //    }
+<script type="text/javascript">
 
-            //    SPA.feedbackModule.toonSuccesBericht(message, data);
-
-            //    $('.popup__btn--accept').each((index, element) => {
-
-            //        if ($(element).attr("onClick") === undefined) {
-            //            $(element).click(function () {
-                            
-            //                connection
-            //                    .invoke("SendJoinRequestResult", data.spelId, data.spelerId, true)
-            //                    .catch(function (err) {
-            //                        return console.error(err.toString());
-            //                    });
-            //            });
-            //        }
-            //    });
-            //});
-
-            //connection.on("ReceiveErrorMessage", function (message) {
-            //    SPA.feedbackModule.toonErrorBericht(message);
-            //});
-
-            //connection.start().then(function () {
-            //    //document.getElementById("btnSendInvite").disabled = false;
-            //}).catch(function (err) {
-            //    return console.error(err.toString());
-            //});
-
-            SPA.Data.initModule("production", "https://localhost:44368/api/spel", "@userId", "@Model.ID");
-            SPA.Reversi.initModule();
-        });
-    </script>
-
-    <h2>U bent de kleur: @Model.Spelers.FirstOrDefault(s => s.Id == userId).Kleur</h2>
+    $(document).ready(function () {
+        Game.init("production", "@userId", "@Model.ID");
+    });
+</script>
 
     
 
-}
+
+    
+

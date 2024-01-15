@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Reversi_CL.Models;
 using ReversiMvcApp.Models;
 
 namespace ReversiMvcApp.Areas.Identity.Pages.Account.Manage

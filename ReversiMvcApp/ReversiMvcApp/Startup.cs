@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,13 +9,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Reversi_CL.Data;
-using Reversi_CL.Data.ReversiDbContext;
-using Reversi_CL.Data.ReversiDbIdentityContext;
-using Reversi_CL.Interfaces;
-using Reversi_CL.Models;
+using ReversiMvcApp.Data;
+using ReversiMvcApp.Interfaces;
+using ReversiMvcApp.Hangfire;
 using ReversiMvcApp.SignalR;
+using System;
 using System.Net;
+using ReversiMvcApp.Data.Context;
+using ReversiMvcApp.Models;
 
 namespace ReversiMvcApp
 {
@@ -26,16 +29,21 @@ namespace ReversiMvcApp
 
         public IConfiguration Configuration { get; }
 
+
+        private string MyAllowAllPolicy = "AllowAllOrigins";
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            //Certificate handling
             services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
                 .AddCertificate();
 
-            services.AddDbContext<ReversiDbIdentityContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("ReversiConnection")));
+            //Db Connections
+            services.AddDbContext<ReversiDbIdentityContext>(options => {
+                options.UseSqlServer(Configuration.GetConnectionString("ReversiConnection"));
+                options.EnableSensitiveDataLogging();
+            });
 
             services.AddIdentity<Speler, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
@@ -43,47 +51,56 @@ namespace ReversiMvcApp
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
-            services.AddDbContext<ReversiDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("ReversiConnection")));
-
+            // MVC
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
-
             services.AddRazorPages();
+
+            //SignalR
             services.AddSignalR();
 
+            //Custom AccessLayers
             services.AddScoped<ISpelRepository, SpelAccessLayer>();
             services.AddScoped<IUserRepository, UserAccessLayer>();
-            //services.AddTransient(typeof(IUserRepository<>), typeof(UserAccessLayer));
-            //services.AddScoped<IUserRepository, UserAccessLayer>();
+            services.AddScoped<ISpelJob, SpelJob>();
 
-            //services.Configure<ForwardedHeadersOptions>(options =>
-            //{
-            //    options.KnownProxies.Add(IPAddress.Parse("127.0.0.1"));
-            //});
+            //Hangfire
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
 
-            services.AddCors(options =>
+            services.AddHangfireServer();
+            
+            services.AddCors((options) =>
             {
-                options.AddPolicy("Policy_EnableJQuery",
-                    builder =>
-                    {
-                        builder.WithOrigins(
-                                "https://ajax.googleapis.com",
-                                "https://localhost",
-                                "https://127.0.0.1"
-                            );
-                    });
+                options.AddPolicy(name: MyAllowAllPolicy, policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, 
+            IWebHostEnvironment env, 
+            IRecurringJobManager recurringJobManager,
+            ISpelJob spelJob)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseDatabaseErrorPage();   
             }
             else
             {
@@ -91,15 +108,21 @@ namespace ReversiMvcApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();
-            app.UseCors();
+            //Hangire Jobs
+            recurringJobManager.AddOrUpdate("Update AFK Games", () => spelJob.UpdateAFKGames(), Cron.Minutely());
 
+            app.UseRouting();
+
+            //Authorization
+            app.UseCors(MyAllowAllPolicy);
             app.UseAuthentication();
             app.UseAuthorization();
 
+            //This is required for portforwarding to work
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -114,6 +137,11 @@ namespace ReversiMvcApp
                 endpoints.MapRazorPages();
                 endpoints.MapHub<SpelHub>("/spelHub");
 
+                var options = new DashboardOptions
+                {
+                    Authorization = new[] { new AuthorizationFilter() }
+                };
+                endpoints.MapHangfireDashboard(options);
             });
         }
     }

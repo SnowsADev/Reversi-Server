@@ -11,9 +11,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using ReversiMvcApp.Models;
-using Reversi_CL.Models;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+using ReversiMvcApp.Models;
 
 namespace ReversiMvcApp.Areas.Identity.Pages.Account
 {
@@ -87,8 +86,7 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-
-                    if ((await _userManager.FindByEmailAsync(Input.Email)).IsEnabled)
+                    if (!(await _userManager.FindByEmailAsync(Input.Email)).IsEnabled)
                     {
                         ModelState.AddModelError(string.Empty, "This account has been disabled.");
                         return Page();
