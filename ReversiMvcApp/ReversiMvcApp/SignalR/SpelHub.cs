@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using ReversiMvcApp.Extensions;
+using ReversiMvcApp.Interfaces;
 using ReversiMvcApp.Models;
 using System.Linq;
 using System.Threading.Tasks;
-using ReversiMvcApp.Extensions;
-using Microsoft.EntityFrameworkCore;
-using ReversiMvcApp.Data.Context;
-using ReversiMvcApp.Data;
-using ReversiMvcApp.Interfaces;
 
 namespace ReversiMvcApp.SignalR
 {

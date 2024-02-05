@@ -1,19 +1,25 @@
 this["spa_templates"] = this["spa_templates"] || {};
 this["spa_templates"]["templates"] = this["spa_templates"]["templates"] || {};
 this["spa_templates"]["templates"]["afgelopen"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
-    return "    <p>Gefeliciteerd! Je hebt gewonnen!</p>\r\n";
-},"3":function(container,depth0,helpers,partials,data) {
     return "    <p>Helaas, je hebt verloren...</p>\r\n";
+},"3":function(container,depth0,helpers,partials,data) {
+    return "    <p>Gefeliciteerd! Je hebt gewonnen!</p>\r\n";
+},"5":function(container,depth0,helpers,partials,data) {
+    return "    <p>Je hebt gelijk gespeeld met je tegenstander.</p>\r\n";
 },"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.hooks.helperMissing, lookupProperty = container.lookupProperty || function(parent, propertyName) {
         if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
           return parent[propertyName];
         }
         return undefined
     };
 
-  return "<div class=\"afgelopen\">\r\n  <h2>Het spel is afgelopen!</h2>\r\n"
-    + ((stack1 = lookupProperty(helpers,"if").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"isWinnaar") : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.program(3, data, 0),"data":data,"loc":{"start":{"line":3,"column":2},"end":{"line":7,"column":9}}})) != null ? stack1 : "")
+  return "<div class=\"afgelopen--"
+    + container.escapeExpression(((helper = (helper = lookupProperty(helpers,"resultaat") || (depth0 != null ? lookupProperty(depth0,"resultaat") : depth0)) != null ? helper : alias2),(typeof helper === "function" ? helper.call(alias1,{"name":"resultaat","hash":{},"data":data,"loc":{"start":{"line":1,"column":23},"end":{"line":1,"column":36}}}) : helper)))
+    + "\">\r\n  <h2>Het spel is afgelopen!</h2>\r\n"
+    + ((stack1 = (lookupProperty(helpers,"isEqual")||(depth0 && lookupProperty(depth0,"isEqual"))||alias2).call(alias1,(depth0 != null ? lookupProperty(depth0,"resultaat") : depth0),0,{"name":"isEqual","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":3,"column":2},"end":{"line":5,"column":14}}})) != null ? stack1 : "")
+    + ((stack1 = (lookupProperty(helpers,"isEqual")||(depth0 && lookupProperty(depth0,"isEqual"))||alias2).call(alias1,(depth0 != null ? lookupProperty(depth0,"resultaat") : depth0),1,{"name":"isEqual","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":6,"column":2},"end":{"line":8,"column":14}}})) != null ? stack1 : "")
+    + ((stack1 = (lookupProperty(helpers,"isEqual")||(depth0 && lookupProperty(depth0,"isEqual"))||alias2).call(alias1,(depth0 != null ? lookupProperty(depth0,"resultaat") : depth0),2,{"name":"isEqual","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":9,"column":2},"end":{"line":11,"column":14}}})) != null ? stack1 : "")
     + "    <p>Klik op de knop om terug te keren naar de lobby.</p>\r\n    <a href=\"/spellen\" class=\"button-link\">Terug naar lobby</a>\r\n</div>";
 },"useData":true});
 Handlebars.registerHelper('isEqual', function(arg1, arg2, options) {
@@ -46,6 +52,9 @@ this["spa_templates"]["templates"]["artiekelen"] = Handlebars.template({"1":func
     + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"articles") : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":2,"column":4},"end":{"line":12,"column":13}}})) != null ? stack1 : "")
     + "</div>\r\n<div class=\"swiper-pagination\"></div>";
 },"useData":true});
+Handlebars.registerHelper("log", function(value) {
+    console.debug(value);
+});
 Handlebars.registerPartial("fiche", Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     return "    <div class=\"bord__fiche--wit\"></div>\r\n";
 },"3":function(container,depth0,helpers,partials,data) {
@@ -61,9 +70,6 @@ Handlebars.registerPartial("fiche", Handlebars.template({"1":function(container,
   return ((stack1 = (lookupProperty(helpers,"isEqual")||(depth0 && lookupProperty(depth0,"isEqual"))||alias2).call(alias1,depth0,1,{"name":"isEqual","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":1,"column":0},"end":{"line":3,"column":12}}})) != null ? stack1 : "")
     + ((stack1 = (lookupProperty(helpers,"isEqual")||(depth0 && lookupProperty(depth0,"isEqual"))||alias2).call(alias1,depth0,2,{"name":"isEqual","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":4,"column":0},"end":{"line":6,"column":12}}})) != null ? stack1 : "");
 },"useData":true}));
-Handlebars.registerHelper("log", function(value) {
-    console.debug(value);
-});
 this["spa_templates"]["templates"]["notificatie"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.hooks.helperMissing, alias3="function", alias4=container.escapeExpression, lookupProperty = container.lookupProperty || function(parent, propertyName) {
         if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {

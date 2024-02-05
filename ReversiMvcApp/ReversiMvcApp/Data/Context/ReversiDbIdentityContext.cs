@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReversiMvcApp.Helpers;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Threading;
-using System;
 using ReversiMvcApp.Models;
 using ReversiMvcApp.Models.Abstract;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Data.Context
 {
@@ -103,7 +103,7 @@ namespace ReversiMvcApp.Data.Context
                 EmailConfirmed = true,
                 LockoutEnabled = false,
                 PhoneNumber = "12345678",
-                IsEnabled = true,  
+                IsEnabled = true,
             };
 
             spelerUser.PasswordHash = passwordHasher.HashPassword(spelerUser, "Test1234!");

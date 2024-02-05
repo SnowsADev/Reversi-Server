@@ -1,26 +1,21 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using ReversiMvcApp.Extensions;
+﻿using ReversiMvcApp.Extensions;
 using ReversiMvcApp.Models.Abstract;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ReversiMvcApp.Models
 {
 
-    public class Spel : Auditable, ISpel 
+    public class Spel : Auditable, ISpel
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public string ID { get; set; }
         public Kleur AandeBeurt { get; set; }
         public string Omschrijving { get; set; }
-        
+
         [Column("Afgelopen")]
         public bool SpelIsAfgelopen { get; set; } = false;
 
@@ -31,7 +26,7 @@ namespace ReversiMvcApp.Models
         public ICollection<Speler> Spelers { get; set; }
 
         [NotMapped]
-        public List<List<int>> MogelijkeZetten 
+        public List<List<int>> MogelijkeZetten
         {
             get { return GetMogelijkeZetten(); }
         }
@@ -122,12 +117,12 @@ namespace ReversiMvcApp.Models
             return mogelijkeZetten;
         }
 
-        
+
 
         public bool DoeZet(int rijZet, int kolomZet)
         {
             if (Afgelopen()) return false;
-            
+
             bool zetGedaan = false;
 
             if (ZetMogelijk(rijZet, kolomZet))
@@ -212,7 +207,7 @@ namespace ReversiMvcApp.Models
 
             int currentX = beginX;
             int currentY = beginY;
-            
+
             while (Bord[currentX, currentY] != AandeBeurt)
             {
                 Bord[currentX, currentY] = AandeBeurt;
@@ -300,7 +295,7 @@ namespace ReversiMvcApp.Models
             //checks if position is on the board
             if (Bord.GetLength(0) <= rijZet || Bord.GetLength(1) <= kolomZet)
                 return false;
-             
+
             //checks if position is not already taken
             if (Bord[rijZet, kolomZet] != Kleur.Geen)
                 return false;

@@ -29,7 +29,7 @@ var Game = function ($) {
     console.log("Game initialized");
     console.log("Game running in ".concat(env, " mode"));
     refresh().then(function () {
-      return _createInterface();
+      return Game.API.showRelevantNews($("#swiper-container"));
     });
   };
   var refresh = function refresh() {
@@ -41,14 +41,8 @@ var Game = function ($) {
       console.error(e);
     });
   };
-  var _createInterface = function _createInterface() {
-    Game.API.showRelevantNews($("#swiper-container"));
-    Game.Stats.showCharts($("#charts-container"), 'stats');
-    Game.Reversi.show("#main-content");
-    console.log("created interface!");
-  };
   var _updateInterface = function _updateInterface() {
-    Game.Stats.showCharts($("#charts-container"), 'stats');
+    Game.Stats.showCharts($("#charts-container"), "spp", "of");
     Game.Reversi.show("#main-content");
   };
   var getEnvironment = function getEnvironment() {
@@ -65,7 +59,7 @@ var Game = function ($) {
       case "development":
         return "api/game.json";
       case "production":
-        return _configMap.backendAdress + "/api/spel";
+        return "/api/spel";
     }
   };
   var getSpeler = function getSpeler() {
@@ -93,7 +87,6 @@ var Game = function ($) {
   };
 }(jQuery);
 Game.API = function () {
-  var swiper;
   var init = function init() {
     console.log("Game.API initialized");
   };
@@ -135,6 +128,8 @@ Game.API = function () {
     _getNewsFromAPI().then(function (data) {
       var parsedTemplate = _parseTemplate(data);
       _updateDOM(parsedTemplate, container);
+    })["catch"](function (e) {
+      console.log("Failed to get news from API");
     });
   };
   return {
@@ -178,7 +173,6 @@ Game.Data = function () {
     });
   };
   var _showJoinRequest = function _showJoinRequest(message, spelId, spelerId) {
-    console.debug("join request message: " + message);
     var templateData = _defineProperty(_defineProperty({
       success: true,
       image: Game.getEnvironment() === "development" ? "" : "~/" + "images/Succes_Icon.png",
@@ -193,12 +187,10 @@ Game.Data = function () {
     });
   };
   var _handleRefreshNotification = function _handleRefreshNotification() {
-    console.debug("Refresh notification");
     Game.refresh();
   };
   var _acceptJoinRequest = function _acceptJoinRequest(e) {
     e.preventDefault();
-    console.debug("accept noti");
     //This function is called when the request is accepted. Thus $(this) will get the element from which the function is called.
     var request = $(this).closest(".popup");
     if (Game.getEnvironment() !== "development") {
@@ -277,21 +269,37 @@ Game.Reversi = function () {
   };
   var _createAfgelopenNotificatie = function _createAfgelopenNotificatie(parent) {
     var gameState = Game.getGameState();
-    var isWinnaar;
-    switch (Game.getEnvironment()) {
-      case "development":
-        isWinnaar = true;
-        break;
-      default:
-        var kleur = gameState.Spelers.find(function (s) {
-          return s.Id === Game.getSpelerToken();
-        }).Kleur;
-        var stats = Game.Stats.getStats();
-        isWinnaar = kleur === 1 ? stats.aantalWit > stats.aantalZwart : stats.aantalZwart > stats.aantalWit;
-        break;
+    var flatBord = gameState.Bord.flat();
+    var resultaat;
+    if (Game.getEnvironment() === "development") {
+      resultaat = 0;
+    } else {
+      var kleur = gameState.Spelers.find(function (s) {
+        return s.Id === Game.getSpelerToken();
+      }).Kleur;
+      var stats = {
+        aantalWit: flatBord.filter(function (num) {
+          return num === 1;
+        }).length,
+        aantalZwart: flatBord.filter(function (num) {
+          return num === 2;
+        }).length
+      };
+      if (stats.aantalWit === stats.aantalZwart) {
+        resultaat = 2;
+      } else {
+        switch (kleur) {
+          case 1:
+            resultaat = stats.aantalWit > stats.aantalZwart ? 1 : 0;
+            break;
+          case 2:
+            resultaat = stats.aantalZwart > stats.aantalWit ? 1 : 0;
+            break;
+        }
+      }
     }
     var html = Game.Template.parseTemplate("afgelopen", {
-      isWinnaar: isWinnaar
+      resultaat: resultaat
     });
     var container = $(parent);
     if (container.find('.afgelopen').length > 0) {
@@ -377,34 +385,62 @@ Game.Reversi = function () {
 Game.Stats = function () {
   var _configMap = {
     containerId: "chart-container",
-    stonesPerPlayerChartData: {
+    stonesPerPlayerChart: {
       chart: null,
-      numberOfBlackPieces: 0,
-      numberOfWhitePieces: 0
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Aantal stenen Wit',
+          data: [],
+          borderColor: '#2a3ab5',
+          backgroundColor: '#2a3ab5'
+        }, {
+          label: 'Aantal stenen Zwart',
+          data: [],
+          borderColor: '#b52a2c',
+          backgroundColor: '#b52a2c'
+        }]
+      }
     },
-    turn: {
-      player: 1,
-      count: 0
+    occupiedFieldsChart: {
+      chart: null,
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Aantal bezette velden',
+          data: [],
+          borderColor: '#b52a2c',
+          backgroundColor: '#b52a2c'
+        }]
+      }
     }
   };
   var init = function init() {
     console.log("Game.Stats initialized");
   };
-  var showCharts = function showCharts(container, id) {
+  var showCharts = function showCharts(container, chartAId, chartBId) {
     //Insert templates into container
     var stonesPerPlayerChart = Game.Template.parseTemplate("stats", {
-      "id": id
+      "id": chartAId
     });
-    container.append(stonesPerPlayerChart);
+    var occupiedFieldsChart = Game.Template.parseTemplate("stats", {
+      "id": chartBId
+    });
+    var container = $(container);
+    if (_configMap.occupiedFieldsChart.chart === null && _configMap.stonesPerPlayerChart.chart === null) {
+      container.append(stonesPerPlayerChart);
+      container.append(occupiedFieldsChart);
+    }
 
     //Draw the charts on templates
-    _createCharts(id, "");
+    _createCharts(chartAId, chartBId);
   };
-  var updateStats = function updateStats() {
+  var _updateStats = function _updateStats() {
     return new Promise(function (resolve, reject) {
       var gameState = Game.getGameState();
       if (gameState !== null) {
-        _updatePieces(gameState.Bord);
+        _updateStonesPerPlayerChart(gameState.Bord);
+        _updateOccupiedFieldsChartChart(gameState.Bord);
         resolve();
         return;
       }
@@ -412,12 +448,22 @@ Game.Stats = function () {
       return;
     });
   };
-  var _updatePieces = function _updatePieces(board) {
-    if (Array.isArray(board) === false) {
-      console.error("Board is not an array");
-      console.debug(board);
-      return;
+  var _updateOccupiedFieldsChartChart = function _updateOccupiedFieldsChartChart(board) {
+    var count = 0;
+    board.forEach(function (row) {
+      row.forEach(function (cell) {
+        if (cell === 1 || cell === 2) {
+          count++;
+        }
+      });
+    });
+    _configMap.occupiedFieldsChart.data.labels.push(_getCurrentTime());
+    _configMap.occupiedFieldsChart.data.datasets[0].data.push(count);
+    if (_configMap.occupiedFieldsChart.chart !== null) {
+      _configMap.occupiedFieldsChart.chart.update();
     }
+  };
+  var _updateStonesPerPlayerChart = function _updateStonesPerPlayerChart(board) {
     var white = 0;
     var black = 0;
     board.forEach(function (row) {
@@ -430,73 +476,71 @@ Game.Stats = function () {
         }
       });
     });
-    _configMap.stonesPerPlayerChartData.numberOfBlackPieces = black;
-    _configMap.stonesPerPlayerChartData.numberOfWhitePieces = white;
+    _configMap.stonesPerPlayerChart.data.labels.push(_getCurrentTime());
+    _configMap.stonesPerPlayerChart.data.datasets[0].data.push(white);
+    _configMap.stonesPerPlayerChart.data.datasets[1].data.push(black);
+    if (_configMap.stonesPerPlayerChart.chart !== null) {
+      _configMap.stonesPerPlayerChart.chart.update();
+    }
+  };
+  var _getCurrentTime = function _getCurrentTime() {
+    var now = new Date();
+    var hours = now.getHours().toString().padStart(2, '0');
+    var minutes = now.getMinutes().toString().padStart(2, '0');
+    var seconds = now.getSeconds().toString().padStart(2, '0');
+    return "".concat(hours, ":").concat(minutes, ":").concat(seconds);
   };
   var _createCharts = function _createCharts(chartA, chartB) {
-    updateStats().then(function () {
-      var sppChart = _configMap.stonesPerPlayerChartData.chart; // stones per player chart
-      if (sppChart !== null && sppChart !== undefined) {
-        _configMap.stonesPerPlayerChartData.chart.destroy();
+    _updateStats().then(function () {
+      var sppChart = _configMap.stonesPerPlayerChart.chart; // stones per player chart
+      var ofChart = _configMap.occupiedFieldsChart.chart; // stones per player chart
+
+      //Create or update stones per player chart
+      if (sppChart === null || sppChart === undefined) {
+        _configMap.stonesPerPlayerChart.chart = _createLineChart(chartA, "Aantal stenen per speler", _configMap.stonesPerPlayerChart.data);
       }
-      sppChart = new Chart(chartA, {
-        type: 'pie',
-        data: {
-          labels: ['White', 'Black'],
-          datasets: [{
-            label: 'Stenen per speler',
-            data: [_configMap.stonesPerPlayerChartData.numberOfWhitePieces, _configMap.stonesPerPlayerChartData.numberOfBlackPieces],
-            backgroundColor: ['rgb(255,255,255)', 'rgb(0,0,0)'],
-            borderWidth: 0
-          }]
-        },
-        options: _getChartOptions('Stenenverdeling')
-      });
-      _configMap.stonesPerPlayerChartData.chart = sppChart;
+      //Create or update occupied fields chart
+      if (ofChart === null || ofChart === undefined) {
+        _configMap.occupiedFieldsChart.chart = _createLineChart(chartB, "Aantal bezette velden", _configMap.occupiedFieldsChart.data);
+      }
       $("#" + chartA).show();
+      $("#" + chartB).show();
     })["catch"](function (e) {
       console.error(e);
       $("#" + chartA).hide();
+      $("#" + chartB).hide();
     });
   };
-  var _getChartOptions = function _getChartOptions(chartTitle) {
-    return {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-          onClick: function onClick(e) {
-            return e.stopPropagation();
+  var _createLineChart = function _createLineChart(chartId, title, data) {
+    var config = {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top'
           },
-          labels: {
-            color: 'rgb(0,0,0)',
-            family: 'Arial'
+          title: {
+            display: true,
+            text: title
           }
         },
-        title: {
-          display: true,
-          text: chartTitle,
-          color: 'rgb(0,0,0)',
-          font: {
-            size: 20,
-            weight: 'normal',
-            family: 'Arial'
+        scales: {
+          y: {
+            min: 0,
+            ticks: {
+              stepSize: 5
+            }
           }
         }
       }
     };
-  };
-  var getStats = function getStats() {
-    return {
-      aantalZwart: _configMap.stonesPerPlayerChartData.numberOfBlackPieces,
-      aantalWit: _configMap.stonesPerPlayerChartData.numberOfWhitePieces
-    };
+    return new Chart(chartId, config);
   };
   return {
     init: init,
-    updateStats: updateStats,
-    showCharts: showCharts,
-    getStats: getStats
+    showCharts: showCharts
   };
 }();
 Game.Template = function () {

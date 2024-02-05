@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using ReversiMvcApp.Models;
-using System;
+﻿using ReversiMvcApp.Models;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Interfaces

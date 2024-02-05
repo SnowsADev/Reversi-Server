@@ -1,19 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
-https://go.microsoft.com/fwlink/?LinkID=208121. 
+https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
   <PropertyGroup>
-    <_PublishTargetUrl>E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Debug\netcoreapp3.1\publish\</_PublishTargetUrl>
-    <History>True|2022-03-08T11:44:13.0450571Z;True|2022-03-08T12:42:01.2672542+01:00;True|2022-03-08T12:39:00.6835691+01:00;True|2022-03-07T15:53:16.5889652+01:00;True|2022-03-07T15:53:01.6197481+01:00;True|2022-03-07T10:25:55.0624210+01:00;False|2022-03-07T10:24:44.6495718+01:00;False|2022-03-07T10:22:57.2724122+01:00;False|2022-03-07T10:22:40.2250345+01:00;True|2022-01-07T14:16:23.9398749+01:00;True|2022-01-07T14:15:34.8244094+01:00;</History>
-    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>E:\Reversi-Server\ReversiMvcApp\ReversiMvcApp\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
+    <History>True|2024-01-26T12:51:03.8447839Z;True|2024-01-26T13:16:45.2294664+01:00;True|2024-01-26T12:44:36.9915709+01:00;True|2024-01-26T12:38:15.9252864+01:00;True|2024-01-19T19:03:49.4731787+01:00;True|2024-01-19T19:02:06.2194062+01:00;True|2024-01-19T18:50:29.6904000+01:00;True|2024-01-19T18:42:57.9317928+01:00;True|2024-01-19T18:01:13.7294823+01:00;True|2024-01-19T17:58:57.3688753+01:00;True|2024-01-19T17:50:15.3590831+01:00;True|2024-01-17T17:03:34.9432608+01:00;</History>
+    <LastFailureDetails />
   </PropertyGroup>
-  <ItemGroup>
-    <EFMigrations Include="Reversi_CL.Data.ReversiDbContext.ReversiDbContext">
-      <Value>Server=%28localdb%29\mssqllocaldb%3bDatabase=reversiDb%3bTrusted_Connection=True%3bMultipleActiveResultSets=true</Value>
-    </EFMigrations>
-    <EFMigrations Include="Reversi_CL.Data.ReversiDbIdentityContext.ReversiDbIdentityContext">
-      <Value>Server=%28localdb%29\mssqllocaldb%3bDatabase=reversiDb%3bTrusted_Connection=True%3bMultipleActiveResultSets=true</Value>
-    </EFMigrations>
-  </ItemGroup>
 </Project>

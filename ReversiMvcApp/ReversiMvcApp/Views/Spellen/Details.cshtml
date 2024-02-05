@@ -25,8 +25,10 @@
 }
 
 <h2>U bent de kleur: @Model.Spelers.FirstOrDefault(s => s.Id == userId).Kleur</h2>
-<button class="btn btn-primary">geef op</button>
 
+<form method="post">
+    <button class="btn btn-primary" asp-controller="Spellen" asp-action="GeefOp" asp-route-Id="@Model.ID">geef op</button>
+</form>
 
 <div id="everything">
     <aside id="swiper-container" class="swiper"></aside>
@@ -40,6 +42,10 @@
     $(document).ready(function () {
         Game.init("production", "@userId", "@Model.ID");
     });
+
+    window.onbeforeunload = function () {
+        $.connection.stop();
+    }
 </script>
 
     

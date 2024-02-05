@@ -1,7 +1,5 @@
 ﻿using ReversiMvcApp.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Interfaces
@@ -21,6 +19,6 @@ namespace ReversiMvcApp.Interfaces
         public bool SpelerIsInSpel(string spelerId);
         public bool SpelerIsInSpel(Speler speler);
         public bool SpelExists(string spelId);
-        
+
     }
 }

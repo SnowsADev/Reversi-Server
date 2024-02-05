@@ -59,7 +59,7 @@ namespace ReversiMvcApp.Data
             _reversiContext.SaveChanges();
         }
 
-        public Task<int> EditSpelAsync(Spel spel) 
+        public Task<int> EditSpelAsync(Spel spel)
         {
             _reversiContext.Update<Spel>(spel);
             return _reversiContext.SaveChangesAsync();
@@ -185,6 +185,6 @@ namespace ReversiMvcApp.Data
             return SpelerIsInSpel(speler.Id);
         }
 
-        
+
     }
 }

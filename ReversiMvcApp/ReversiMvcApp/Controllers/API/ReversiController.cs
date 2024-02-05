@@ -110,7 +110,7 @@ namespace ReversiMvcApp.Controllers.API
             Speler speler = spel.Spelers.FirstOrDefault(speler => speler.Id == dto.SpelerToken);
 
             if (spel == null || speler == null) return BadRequest("Speler of Spel niet gevonden");
-            if(spel.AandeBeurt != speler.Kleur) return BadRequest("Speler is niet aan de beurt");
+            if (spel.AandeBeurt != speler.Kleur) return BadRequest("Speler is niet aan de beurt");
 
             if (spel.DoeZet(dto.RijZet, dto.KolomZet))
             {

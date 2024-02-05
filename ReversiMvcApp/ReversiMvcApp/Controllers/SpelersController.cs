@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using ReversiMvcApp.Interfaces;
 using ReversiMvcApp.Models;
+using ReversiMvcApp.Models.ViewModels.Identity;
 using ReversiMvcApp.Models.ViewModels.Speler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Controllers
@@ -15,12 +20,20 @@ namespace ReversiMvcApp.Controllers
     public class SpelersController : Controller
     {
         private readonly IUserRepository _userAccessLayer;
+        private readonly UserManager<Speler> _userManager;
         private readonly ILogger<Speler> _logger;
+        private readonly SignInManager<Speler> _signInManager;
+        private readonly IEmailSender _emailSender;
 
-        public SpelersController(IUserRepository userAccessLayer, ILogger<Speler> logger)
+        public SpelersController(IUserRepository userAccessLayer, 
+            UserManager<Speler> userManager, ILogger<Speler> logger, 
+            SignInManager<Speler> signInManager, IEmailSender emailSender)
         {
             this._userAccessLayer = userAccessLayer;
+            this._userManager = userManager;
             this._logger = logger;
+            this._signInManager = signInManager;
+            this._emailSender = emailSender;
         }
 
         // GET: Spelers
@@ -72,24 +85,33 @@ namespace ReversiMvcApp.Controllers
             return View();
         }
 
-        // POST: Spelers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Mediator")]
-        public async Task<IActionResult> Create([Bind("Id,Naam,AantalGewonnen,AantalVerloren,AantalGelijk")] Speler user)
+        public async Task<IActionResult> Create(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                await _userAccessLayer.CreateUserAsync(user);
+                var user = new Speler { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
 
-                _logger.LogInformation("User {0} created a new user with email {1}", User.Identity.Name, user.Email);
-                
-                return RedirectToAction(nameof(Index));
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "speler");
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
             }
 
-            return View(user);
+            // If ModelState is not valid, redisplay the registration form with validation errors
+            return View(model);
         }
 
         // GET: Spelers/Edit/5

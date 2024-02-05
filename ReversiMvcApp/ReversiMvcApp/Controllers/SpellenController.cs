@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using ReversiMvcApp.Interfaces;
 using ReversiMvcApp.Models;
+using ReversiMvcApp.SignalR;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,11 +16,13 @@ namespace ReversiMvcApp.Controllers
     {
         private readonly ISpelRepository _spelAccessLayer;
         private readonly IUserRepository _userAccessLayer;
+        private readonly IHubContext<SpelHub> _hubContext;
 
-        public SpellenController(ISpelRepository spelAccessLayer, IUserRepository userAccessLayer)
+        public SpellenController(ISpelRepository spelAccessLayer, IUserRepository userAccessLayer, IHubContext<SpelHub> hubContext)
         {
             _spelAccessLayer = spelAccessLayer;
             _userAccessLayer = userAccessLayer;
+            _hubContext = hubContext;
         }
 
         // GET: Spellen
@@ -66,7 +70,7 @@ namespace ReversiMvcApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            
+
             ViewData["UserID"] = currentUser.Id;
 
             return View(spel);
@@ -106,11 +110,11 @@ namespace ReversiMvcApp.Controllers
 
                 currentUser.Kleur = Kleur.Zwart;
                 await _userAccessLayer.UpdateUserAsync(currentUser);
-                
+
                 spel.Spelers = new List<Speler>() { currentUser };
 
                 _spelAccessLayer.AddSpel(spel);
-                
+
                 Spel nieuwSpel = _spelAccessLayer.GetOnafgerondeSpelBySpeler(currentUser);
 
                 return RedirectToAction(nameof(Details), new { id = nieuwSpel.ID });
@@ -164,7 +168,7 @@ namespace ReversiMvcApp.Controllers
         public IActionResult Delete(string id)
         {
             var spel = _spelAccessLayer.GetOnafgerondeSpel(id);
-            
+
             if (spel == null)
             {
                 return NotFound();
@@ -185,7 +189,7 @@ namespace ReversiMvcApp.Controllers
 
 
         //ToDo: ValidationToken
-        [HttpPost, ActionName("joinspel")]
+        [HttpPost, ActionName("Joinspel")]
         public async Task<IActionResult> JoinSpel(string Id)
         {
             Spel spel = _spelAccessLayer.GetOnafgerondeSpel(Id);
@@ -200,6 +204,34 @@ namespace ReversiMvcApp.Controllers
             _spelAccessLayer.AddSpelerToSpel(spel, currentSpeler);
 
             return Ok();
+        }
+
+        [HttpPost, ActionName("GeefOp")]
+        public async Task<IActionResult> GeefOp(string Id)
+        {
+            Spel spel = _spelAccessLayer.GetOnafgerondeSpel(Id);
+            Speler geeftOpSpeler = await _userAccessLayer.GetUserAsync(User);
+            Speler winnaarSpeler = null;
+
+            if (spel == null || geeftOpSpeler == null)
+            {
+                return NotFound();
+            }
+
+            if (spel.Spelers.Count() == 2)
+            {
+                winnaarSpeler = spel.Spelers.FirstOrDefault(s => s.Id != geeftOpSpeler.Id);
+                winnaarSpeler.AantalGewonnen += 1;
+                geeftOpSpeler.AantalVerloren += 1;
+            }
+
+            spel.SpelIsAfgelopen = true;
+
+            _spelAccessLayer.EditSpel(spel);
+
+            await _hubContext.Clients.Users(winnaarSpeler?.Id).SendAsync("ReceiveRefreshGameNotification");
+
+            return RedirectToAction(nameof(Index));
         }
 
     }

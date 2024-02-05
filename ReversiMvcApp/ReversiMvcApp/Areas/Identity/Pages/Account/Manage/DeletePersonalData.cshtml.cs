@@ -1,12 +1,12 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ReversiMvcApp.Interfaces;
 using ReversiMvcApp.Models;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Areas.Identity.Pages.Account.Manage
 {
@@ -73,7 +73,7 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account.Manage
 
             int result = await _userAccessLayer.DeleteUserAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
-            
+
             //No changes made in the database
             if (result == 0)
             {

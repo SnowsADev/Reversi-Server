@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ReversiMvcApp.Interfaces;
 using ReversiMvcApp.Models;
+using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Areas.Identity.Pages.Account
 {
@@ -17,7 +17,7 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
         private readonly IUserRepository _userAccessLayer;
         private readonly ILogger<LogoutModel> _logger;
 
-        public LogoutModel(SignInManager<Speler> signInManager, 
+        public LogoutModel(SignInManager<Speler> signInManager,
             ISpelRepository spelAccessLayer,
             IUserRepository userAccessLayer,
             ILogger<LogoutModel> logger)
@@ -53,7 +53,7 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
 
-            
+
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);

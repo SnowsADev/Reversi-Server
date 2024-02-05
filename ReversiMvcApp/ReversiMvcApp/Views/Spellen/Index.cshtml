@@ -14,15 +14,12 @@
 
         let connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();
 
-
         connection.on("ReceiveErrorPopup", function (message) {
             SPA.feedbackModule.toonErrorBericht(message);
         });
 
-
         connection.on("ReceiveJoinRequestResult", function (json) {
             let data = JSON.parse(json);
-            console.log(data);
 
             if (data.success === true) {
                 console.log('Success!')
@@ -37,7 +34,7 @@
 
 
         //Send Join Request
-        document.getElementById("TblSpellen").addEventListener("click", function (event) {
+        document.getElementById("TblSpellen").addEventListener("click", function (e) {
             const isButton = event.target.className.includes("btn");
             const bShouldIgnore = event.target.hasAttribute("skipButton");
 
@@ -45,13 +42,14 @@
                 return;
             }
 
-            event.preventDefault();
+            e.preventDefault();
 
-            connection.invoke("SendJoinRequest", event.target.dataset.id, "@userId").catch(function (err) {
-                SPA.feedbackModule.toonErrorBericht(message);
-                return console.error(err.toString());
-            });
+            connection.invoke("SendJoinRequest", event.target.dataset.id, "@userId");
         });
+
+        window.onbeforeunload = function () {
+            connection.stop();
+        }
     </script>
 
 }

@@ -4,7 +4,6 @@ using ReversiMvcApp.Models;
 using ReversiMvcApp.SignalR;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,7 +14,7 @@ namespace ReversiMvcApp.Hangfire
         private readonly ISpelRepository _spelAccessLayer;
         private readonly IHubContext<SpelHub> _hubContext;
 
-        private readonly int maxAFKDuration = 1;
+        private readonly int maxAFKDuration = 5;
 
         public SpelJob(ISpelRepository spelAccessLayer, IHubContext<SpelHub> hubContext)
         {

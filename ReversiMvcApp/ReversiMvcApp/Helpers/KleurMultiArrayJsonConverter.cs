@@ -1,11 +1,7 @@
-﻿using System;
-using System.ComponentModel;
-using System.Globalization;
-using System.Text;
+﻿using ReversiMvcApp.Models;
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ReversiMvcApp.Models;
 
 namespace ReversiMvcApp.Helpers
 {
@@ -50,7 +46,7 @@ namespace ReversiMvcApp.Helpers
                 {
                     sResult += (int)bord[i, j];
                 }
-                sResult +=  "]";
+                sResult += "]";
             }
             sResult += "]";
 

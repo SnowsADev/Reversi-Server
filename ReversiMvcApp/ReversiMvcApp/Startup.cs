@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using ReversiMvcApp.Data;
-using ReversiMvcApp.Interfaces;
+using ReversiMvcApp.Data.Context;
 using ReversiMvcApp.Hangfire;
+using ReversiMvcApp.Interfaces;
+using ReversiMvcApp.Models;
 using ReversiMvcApp.SignalR;
 using System;
-using System.Net;
-using ReversiMvcApp.Data.Context;
-using ReversiMvcApp.Models;
 
 namespace ReversiMvcApp
 {
@@ -30,7 +30,7 @@ namespace ReversiMvcApp
         public IConfiguration Configuration { get; }
 
 
-        private string MyAllowAllPolicy = "AllowAllOrigins";
+        private string AllowEverythingPolicy = "AllowAllOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -40,12 +40,19 @@ namespace ReversiMvcApp
                 .AddCertificate();
 
             //Db Connections
-            services.AddDbContext<ReversiDbIdentityContext>(options => {
+            services.AddDbContext<ReversiDbIdentityContext>(options =>
+            {
                 options.UseSqlServer(Configuration.GetConnectionString("ReversiConnection"));
-                options.EnableSensitiveDataLogging();
             });
 
-            services.AddIdentity<Speler, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<Speler, IdentityRole>(options => {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 10;
+                })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ReversiDbIdentityContext>()
                 .AddDefaultUI()
@@ -75,14 +82,14 @@ namespace ReversiMvcApp
                     SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
                     QueuePollInterval = TimeSpan.Zero,
                     UseRecommendedIsolationLevel = true,
-                    DisableGlobalLocks = true
+                    DisableGlobalLocks = true, // Migration to Schema 7 is required
                 }));
-
-            services.AddHangfireServer();
             
+            services.AddHangfireServer();
+
             services.AddCors((options) =>
             {
-                options.AddPolicy(name: MyAllowAllPolicy, policy =>
+                options.AddPolicy(name: AllowEverythingPolicy, policy =>
                 {
                     policy.AllowAnyOrigin()
                         .AllowAnyHeader()
@@ -92,15 +99,15 @@ namespace ReversiMvcApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, 
-            IWebHostEnvironment env, 
+        public void Configure(IApplicationBuilder app,
+            IWebHostEnvironment env,
             IRecurringJobManager recurringJobManager,
             ISpelJob spelJob)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();   
+                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -118,7 +125,7 @@ namespace ReversiMvcApp
             app.UseRouting();
 
             //Authorization
-            app.UseCors(MyAllowAllPolicy);
+            app.UseCors(AllowEverythingPolicy);
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -135,7 +142,8 @@ namespace ReversiMvcApp
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapRazorPages();
-                endpoints.MapHub<SpelHub>("/spelHub");
+                endpoints.MapHub<SpelHub>("/spelHub")
+                    .RequireCors(AllowEverythingPolicy);
 
                 var options = new DashboardOptions
                 {

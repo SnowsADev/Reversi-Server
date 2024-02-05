@@ -1,9 +1,7 @@
-﻿using ReversiMvcApp.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ReversiMvcApp.Helpers
 {
@@ -18,7 +16,7 @@ namespace ReversiMvcApp.Helpers
         {
             writer.WriteStartArray();
 
-            foreach (List<int> kvp in value )
+            foreach (List<int> kvp in value)
             {
                 writer.WriteStartObject();
                 writer.WriteNumber("x", kvp[0]);

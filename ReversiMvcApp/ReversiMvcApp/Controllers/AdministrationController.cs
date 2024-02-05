@@ -82,7 +82,7 @@ namespace ReversiMvcApp.Controllers
                 Users = new List<string>()
             };
 
-            
+
             foreach (var user in _userManager.Users)
             {
                 if (await _userManager.IsInRoleAsync(user, role.Name))
@@ -143,17 +143,17 @@ namespace ReversiMvcApp.Controllers
                 {
                     await _userManager.AddToRoleAsync(speler, role.Name);
                 }
-                else if(userIsInRole)
+                else if (userIsInRole)
                 {
                     await _userManager.RemoveFromRoleAsync(speler, role.Name);
                 }
             }
 
-            return RedirectToAction(nameof(EditRole), new { id = role.Id});
+            return RedirectToAction(nameof(EditRole), new { id = role.Id });
         }
 
 
     }
 
-    
+
 }

@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ReversiMvcApp.Data.Context;
 using ReversiMvcApp.Interfaces;
+using ReversiMvcApp.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ReversiMvcApp.Data.Context;
-using ReversiMvcApp.Models;
-using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Options;
-using System.Security.Principal;
 
 namespace ReversiMvcApp.Data
 {
@@ -18,7 +15,7 @@ namespace ReversiMvcApp.Data
         private readonly ReversiDbIdentityContext _identityContext;
         private readonly UserManager<Speler> _userManager;
 
-        public UserAccessLayer(ReversiDbIdentityContext identityContext, UserManager<Speler> userManager)        
+        public UserAccessLayer(ReversiDbIdentityContext identityContext, UserManager<Speler> userManager)
         {
             _identityContext = identityContext;
             _userManager = userManager;
@@ -30,7 +27,7 @@ namespace ReversiMvcApp.Data
             _identityContext.Spelers.Add(user);
             await _identityContext.SaveChangesAsync();
             await _userManager.AddToRoleAsync(user, "Speler");
-            
+
         }
 
         public void DeleteUser(Speler user)
@@ -44,7 +41,7 @@ namespace ReversiMvcApp.Data
         {
             user.IsEnabled = false;
             _identityContext.Update(user);
-            
+
             return _identityContext.SaveChangesAsync();
         }
 
