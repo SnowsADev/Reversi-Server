@@ -1,0 +1,3 @@
+              - name: Dotnet dependency update
+                uses: tjololo/nuget-dependencies-update@v1.2.1
+            
