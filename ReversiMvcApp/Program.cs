@@ -3,6 +3,7 @@ using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.ObjectPool;
 using ReversiMvcApp.Data;
 using ReversiMvcApp.Data.Context;
 using ReversiMvcApp.Hangfire;
@@ -17,7 +19,9 @@ using ReversiMvcApp.Interfaces;
 using ReversiMvcApp.Models;
 using ReversiMvcApp.SignalR;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -91,22 +95,25 @@ services.AddHangfire(configuration => configuration
 services.AddHangfireServer();
 
 // CORS
-string AllowEverythingPolicy = "AllowAllOrigins";
+string CORSPolicy = "CORSPolicy";
 
 builder.Services.AddCors((options) =>
 {
-    options.AddPolicy(name: AllowEverythingPolicy, policy =>
+    options.AddPolicy(name: CORSPolicy, policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("https://localhost:44378/", "http://localhost:52463/", "https://*.hbo-ict.org/")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 
+
 if (builder.Environment.IsDevelopment())
 {
     services.AddDatabaseDeveloperPageExceptionFilter();
 }
+
+services.AddAntiforgery(x => x.SuppressXFrameOptionsHeader = true);
 
 #endregion
 
@@ -146,10 +153,24 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseRouting();
 
 //Authorization
-app.UseCors(AllowEverythingPolicy);
+app.UseCors(CORSPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.Use(async (context, next) =>
+{
+    string csp = "default-src 'self' localhost newsapi.org; " +
+    "script-src 'self' 'unsafe-inline' cdn.jsdelivr.net ajax.googleapis.com; " +
+    "img-src 'self' localhost; " +
+    "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; " +
+    "font-src 'self' data:; " +
+    "connect-src 'self' ws: newsapi.org http://localhost:*;";
+
+    context.Response.Headers.Append("Content-Security-Policy", csp);
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+
+    await next();
+});
 
 //Mapping
 app.MapControllers();
@@ -158,7 +179,7 @@ app.MapControllerRoute(
         pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 app.MapHub<SpelHub>("/spelHub")
-    .RequireCors(AllowEverythingPolicy);
+    .RequireCors(CORSPolicy);
 
 app.MapHangfireDashboard(new DashboardOptions
 {

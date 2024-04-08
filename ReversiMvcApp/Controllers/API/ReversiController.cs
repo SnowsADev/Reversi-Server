@@ -11,12 +11,11 @@ using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Controllers.API
 {
-    [EnableCors(PolicyName = "AllowAllOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class ReversiController : ControllerBase
     {
-        private readonly JsonSerializerOptions serializerOptions = new JsonSerializerOptions
+        private readonly JsonSerializerOptions serializerOptions = new()
         {
             Converters =
                 {

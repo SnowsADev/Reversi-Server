@@ -42,10 +42,6 @@
     $(document).ready(function () {
         Game.init("production", "@userId", "@Model.ID");
     });
-
-    window.onbeforeunload = function () {
-        $.connection.stop();
-    }
 </script>
 
     

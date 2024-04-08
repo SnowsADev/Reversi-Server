@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Identity\**" />
+    <Content Remove="wwwroot\Identity\**" />
+    <EmbeddedResource Remove="wwwroot\Identity\**" />
+    <None Remove="wwwroot\Identity\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Hangfire.AspNetCore" Version="1.8.11" />
     <PackageReference Include="Hangfire.Core" Version="1.8.11" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.11" />
