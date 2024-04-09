@@ -9,16 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="wwwroot\Identity\**" />
-    <Content Remove="wwwroot\Identity\**" />
-    <EmbeddedResource Remove="wwwroot\Identity\**" />
-    <None Remove="wwwroot\Identity\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.11" />
-    <PackageReference Include="Hangfire.Core" Version="1.8.11" />
-    <PackageReference Include="Hangfire.SqlServer" Version="1.8.11" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.12" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.12" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.8.12" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
