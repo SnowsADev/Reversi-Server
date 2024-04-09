@@ -1,6 +1,6 @@
 ﻿@model ReversiMvcApp.Models.Spel
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env;
-
+@addTagHelper *, NetEscapades.AspNetCore.SecurityHeaders.TagHelpers
 
 @{
     ViewData["Title"] = "Details";
@@ -37,7 +37,7 @@
 </div>
 
 
-<script type="text/javascript">
+<script type="text/javascript" asp-add-nonce>
 
     $(document).ready(function () {
         Game.init("production", "@userId", "@Model.ID");

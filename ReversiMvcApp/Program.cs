@@ -157,20 +157,46 @@ app.UseCors(CORSPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.Use(async (context, next) =>
-{
-    string csp = "default-src 'self' localhost newsapi.org; " +
-    "script-src 'self' 'unsafe-inline' cdn.jsdelivr.net ajax.googleapis.com; " +
-    "img-src 'self' localhost; " +
-    "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; " +
-    "font-src 'self' data:; " +
-    "connect-src 'self' ws: newsapi.org http://localhost:*;";
+var policyCollection = new HeaderPolicyCollection()
+        .AddDefaultSecurityHeaders()
+        .AddContentSecurityPolicy(builder =>
+        {
+            builder.AddUpgradeInsecureRequests(); // upgrade-insecure-requests
+            builder.AddBlockAllMixedContent(); // block-all-mixed-content
 
-    context.Response.Headers.Append("Content-Security-Policy", csp);
-    context.Response.Headers.Append("X-Frame-Options", "DENY");
+            builder.AddDefaultSrc() // default-src 'self' http://testUrl.com
+                .Self()
+                .From("localhost")
+                .From("newsapi.org");
 
-    await next();
-});
+            builder.AddConnectSrc() // connect-src 'self' http://testUrl.com
+                .Self()
+                .From("ws:")
+                .From("newsapi.org")
+                .From("http://localhost:*");
+
+            builder.AddImgSrc() // img-src https:
+                .OverHttps();
+
+            builder.AddScriptSrc() // script-src 'self' 'unsafe-inline' 'unsafe-eval' 'report-sample'
+                .Self()
+                .From("cdn.jsdelivr.net")
+                .From("ajax.googleapis.com")
+                .WithNonce();
+
+            builder.AddStyleSrc() // style-src 'self' 'strict-dynamic'
+                .Self()
+                .From("cdn.jsdelivr.net")
+                .UnsafeInline()
+                .UnsafeEval();
+
+            builder.AddFontSrc()
+                .Self()
+                .From("data:");
+
+        });
+
+app.UseSecurityHeaders(policyCollection);
 
 //Mapping
 app.MapControllers();
