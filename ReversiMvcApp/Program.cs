@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
 using ReversiMvcApp.Data;
 using ReversiMvcApp.Data.Context;
 using ReversiMvcApp.Hangfire;
@@ -21,7 +21,7 @@ using ReversiMvcApp.SignalR;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -40,6 +40,13 @@ builder.Logging.AddFilter("Microsoft.AspNetCore.Http.Connections", LogLevel.Debu
 
 builder.WebHost.UseUrls("http://localhost:5000");
 
+builder.Services.AddHttpsRedirection(options =>
+{
+    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+    options.HttpsPort = 443;
+});
+
+
 #region Services
 var services = builder.Services;
 
@@ -53,14 +60,15 @@ services.AddDbContext<ReversiDbIdentityContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ReversiConnection"));
 });
 
-services.AddIdentity<Speler, IdentityRole>(options => {
-        options.SignIn.RequireConfirmedAccount = true;
-        options.Password.RequireNonAlphanumeric = true;
-        options.Password.RequireDigit = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequireUppercase = true;
-        options.Password.RequiredLength = 10;
-    })
+services.AddIdentity<Speler, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 10;
+})
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ReversiDbIdentityContext>()
     .AddDefaultUI()
@@ -93,6 +101,29 @@ services.AddHangfire(configuration => configuration
     }));
 
 services.AddHangfireServer();
+services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    options.SlidingExpiration = true;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+    options.Events.OnRedirectToLogout = context =>
+    {
+        context.Response.Redirect("/Account/Logout");
+        return Task.CompletedTask;
+    };
+});
+
+services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("Rate-Limit", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 50;
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 2;
+    });
+});
 
 // CORS
 string CORSPolicy = "CORSPolicy";
@@ -101,9 +132,18 @@ builder.Services.AddCors((options) =>
 {
     options.AddPolicy(name: CORSPolicy, policy =>
     {
-        policy.WithOrigins("https://localhost:44378/", "http://localhost:52463/", "https://*.hbo-ict.org/")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        if (Debugger.IsAttached)
+        {
+            policy.WithOrigins("https://localhost:44378/", "http://localhost:52463/")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }
+        else
+        {
+            policy.WithOrigins("https://*.hbo-ict.org/")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }
     });
 });
 
@@ -151,6 +191,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 
 // Routing
 app.UseRouting();
+app.UseHttpsRedirection();
 
 //Authorization
 app.UseCors(CORSPolicy);
@@ -159,53 +200,94 @@ app.UseAuthorization();
 
 var policyCollection = new HeaderPolicyCollection()
         .AddDefaultSecurityHeaders()
+        .AddContentTypeOptionsNoSniff()
+        .AddReferrerPolicySameOrigin()
+        .AddFrameOptionsDeny()
+        .AddStrictTransportSecurityNoCache()
         .AddContentSecurityPolicy(builder =>
         {
             builder.AddUpgradeInsecureRequests(); // upgrade-insecure-requests
             builder.AddBlockAllMixedContent(); // block-all-mixed-content
 
-            builder.AddDefaultSrc() // default-src 'self' http://testUrl.com
+            if (Debugger.IsAttached)
+            {
+                builder.AddDefaultSrc() // default-src 'self' http://testUrl.com
                 .Self()
-                .From("localhost")
                 .From("newsapi.org");
 
-            builder.AddConnectSrc() // connect-src 'self' http://testUrl.com
-                .Self()
-                .From("ws:")
-                .From("newsapi.org")
-                .From("http://localhost:*");
+                builder.AddConnectSrc() // connect-src 'self' http://testUrl.com
+                    .Self()
+                    .From("newsapi.org")
+                    .From("localhost:*")
+                    .From("wss:");
 
-            builder.AddImgSrc() // img-src https:
-                .OverHttps();
+                builder.AddImgSrc() // img-src https:
+                    .OverHttps();
 
-            builder.AddScriptSrc() // script-src 'self' 'unsafe-inline' 'unsafe-eval' 'report-sample'
-                .Self()
-                .From("cdn.jsdelivr.net")
-                .From("ajax.googleapis.com")
-                .WithNonce();
+                builder.AddScriptSrc() // script-src 'self' 'unsafe-inline' 'unsafe-eval' 'report-sample'
+                    .Self()
+                    .From("cdn.jsdelivr.net")
+                    .From("ajax.googleapis.com")
+                    .WithNonce();
 
-            builder.AddStyleSrc() // style-src 'self' 'strict-dynamic'
-                .Self()
-                .From("cdn.jsdelivr.net")
-                .UnsafeInline()
-                .UnsafeEval();
+                builder.AddStyleSrc() // style-src 'self' 'strict-dynamic'
+                    .Self()
+                    .From("cdn.jsdelivr.net")
+                    .UnsafeInline()
+                    .UnsafeEval();
 
-            builder.AddFontSrc()
-                .Self()
-                .From("data:");
+                builder.AddFontSrc()
+                    .Self()
+                    .From("data:");
+            }
+            else
+            {
 
+                builder.AddDefaultSrc()
+                    .Self()
+                    .From("newsapi.org");
+
+                builder.AddConnectSrc()
+                    .Self()
+                    .From("newsapi.org");
+
+                builder.AddScriptSrc()
+                    .Self()
+                    .From("cdn.jsdelivr.net")
+                    .From("ajax.googleapis.com")
+                    .WithNonce();
+
+                builder.AddStyleSrc()
+                    .Self()
+                    .From("cdn.jsdelivr.net")
+                    .WithNonce();
+
+                builder.AddImgSrc()
+                    .Self()
+                    .OverHttps();
+            }
         });
 
 app.UseSecurityHeaders(policyCollection);
+app.UseRateLimiter();
 
 //Mapping
-app.MapControllers();
+app.MapControllers()
+    .RequireCors(CORSPolicy)
+    .RequireRateLimiting("Rate-Limit");
+
 app.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+        pattern: "{controller=Home}/{action=Index}/{id?}")
+    .RequireCors(CORSPolicy)
+    .RequireRateLimiting("Rate-Limit");
+
+app.MapRazorPages()
+    .RequireCors(CORSPolicy)
+    .RequireRateLimiting("Rate-Limit");
+
 app.MapHub<SpelHub>("/spelHub")
-    .RequireCors(CORSPolicy);
+    .RequireRateLimiting("Rate-Limit");
 
 app.MapHangfireDashboard(new DashboardOptions
 {

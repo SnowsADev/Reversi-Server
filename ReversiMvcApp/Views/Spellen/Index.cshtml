@@ -9,7 +9,7 @@
 }
 
 @section Scripts {
-    <script type="text/javascript">
+    <script type="text/javascript" asp-add-nonce>
         "use strict";
 
         let connection = new signalR.HubConnectionBuilder().withUrl("/spelHub").build();

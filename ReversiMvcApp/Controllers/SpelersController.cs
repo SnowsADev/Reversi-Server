@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using ReversiMvcApp.Interfaces;
 using ReversiMvcApp.Models;
@@ -10,8 +9,6 @@ using ReversiMvcApp.Models.ViewModels.Identity;
 using ReversiMvcApp.Models.ViewModels.Speler;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Encodings.Web;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ReversiMvcApp.Controllers
@@ -25,8 +22,8 @@ namespace ReversiMvcApp.Controllers
         private readonly SignInManager<Speler> _signInManager;
         private readonly IEmailSender _emailSender;
 
-        public SpelersController(IUserRepository userAccessLayer, 
-            UserManager<Speler> userManager, ILogger<Speler> logger, 
+        public SpelersController(IUserRepository userAccessLayer,
+            UserManager<Speler> userManager, ILogger<Speler> logger,
             SignInManager<Speler> signInManager, IEmailSender emailSender)
         {
             this._userAccessLayer = userAccessLayer;
