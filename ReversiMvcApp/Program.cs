@@ -270,6 +270,7 @@ var policyCollection = new HeaderPolicyCollection()
 
 app.UseSecurityHeaders(policyCollection);
 app.UseRateLimiter();
+app.UseSecurityHeaders(policyCollection);
 
 //Mapping
 app.MapControllers()
