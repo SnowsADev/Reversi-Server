@@ -48,7 +48,7 @@ namespace ReversiMvcApp.Models
 
         public bool Afgelopen()
         {
-            if (this.MogelijkeZetten.Count() > 0)
+            if (MogelijkeZetten.Count > 0)
             {
                 return false;
             }

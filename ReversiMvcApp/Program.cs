@@ -32,10 +32,9 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     WebRootPath = "wwwroot"
 });
 
-
 #region Logging
-builder.Logging.AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Debug);
-builder.Logging.AddFilter("Microsoft.AspNetCore.Http.Connections", LogLevel.Debug);
+builder.Logging.AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Trace);
+builder.Logging.AddFilter("Microsoft.AspNetCore.Http.Connections", LogLevel.Trace);
 #endregion
 
 builder.WebHost.UseUrls("http://localhost:5000");
@@ -75,8 +74,9 @@ services.AddIdentity<Speler, IdentityRole>(options =>
     .AddDefaultTokenProviders();
 
 // MVC
-services.AddControllersWithViews().AddRazorRuntimeCompilation();
 services.AddRazorPages();
+services.AddControllersWithViews()
+    .AddRazorRuntimeCompilation();
 
 //SignalR
 services.AddSignalR();
@@ -106,7 +106,7 @@ services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     options.SlidingExpiration = true;
     options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Events.OnRedirectToLogout = context =>
     {
         context.Response.Redirect("/Account/Logout");
@@ -207,65 +207,34 @@ var policyCollection = new HeaderPolicyCollection()
         .AddContentSecurityPolicy(builder =>
         {
             builder.AddUpgradeInsecureRequests(); // upgrade-insecure-requests
-            builder.AddBlockAllMixedContent(); // block-all-mixed-content
-
-            if (Debugger.IsAttached)
-            {
-                builder.AddDefaultSrc() // default-src 'self' http://testUrl.com
+            builder.AddConnectSrc() // connect-src 'self' http://testUrl.com
                 .Self()
                 .From("newsapi.org");
+            builder.AddImgSrc() // img-src https:
+                .Self();
+            
+            builder.AddFrameSrc().None();
+            builder.AddFrameAncestors().None();
+            builder.AddMediaSrc().None();
+            builder.AddObjectSrc().None();
+            builder.AddManifestSrc().None();
+            
+            builder.AddFormAction().Self();
+            builder.AddScriptSrc() // script-src 'self' 'unsafe-inline' 'unsafe-eval' 'report-sample'
+                .Self()
+                .From("cdn.jsdelivr.net")
+                .From("ajax.googleapis.com")
+                .WithNonce();
 
-                builder.AddConnectSrc() // connect-src 'self' http://testUrl.com
-                    .Self()
-                    .From("newsapi.org")
-                    .From("localhost:*")
-                    .From("wss:");
+            builder.AddStyleSrc() // style-src 'self' 'strict-dynamic'
+                .Self()
+                .From("cdn.jsdelivr.net")
+                .UnsafeInline();
 
-                builder.AddImgSrc() // img-src https:
-                    .OverHttps();
+            builder.AddFontSrc()
+                .Self()
+                .From("data:");
 
-                builder.AddScriptSrc() // script-src 'self' 'unsafe-inline' 'unsafe-eval' 'report-sample'
-                    .Self()
-                    .From("cdn.jsdelivr.net")
-                    .From("ajax.googleapis.com")
-                    .WithNonce();
-
-                builder.AddStyleSrc() // style-src 'self' 'strict-dynamic'
-                    .Self()
-                    .From("cdn.jsdelivr.net")
-                    .UnsafeInline()
-                    .UnsafeEval();
-
-                builder.AddFontSrc()
-                    .Self()
-                    .From("data:");
-            }
-            else
-            {
-
-                builder.AddDefaultSrc()
-                    .Self()
-                    .From("newsapi.org");
-
-                builder.AddConnectSrc()
-                    .Self()
-                    .From("newsapi.org");
-
-                builder.AddScriptSrc()
-                    .Self()
-                    .From("cdn.jsdelivr.net")
-                    .From("ajax.googleapis.com")
-                    .WithNonce();
-
-                builder.AddStyleSrc()
-                    .Self()
-                    .From("cdn.jsdelivr.net")
-                    .WithNonce();
-
-                builder.AddImgSrc()
-                    .Self()
-                    .OverHttps();
-            }
         });
 
 app.UseSecurityHeaders(policyCollection);

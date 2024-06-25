@@ -7,6 +7,7 @@ using ReversiMvcApp.Interfaces;
 using ReversiMvcApp.Models;
 using ReversiMvcApp.Models.ViewModels.Identity;
 using ReversiMvcApp.Models.ViewModels.Speler;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -183,7 +184,8 @@ namespace ReversiMvcApp.Controllers
 
                 await _userAccessLayer.UpdateUserAsync(user);
 
-                _logger.LogInformation("User {0} edited user {1} successfully", User.Identity.Name, user.Email);
+                var emailSanitized = user.Email.Replace(Environment.NewLine, "");
+                _logger.LogInformation("User {0} edited user {1} successfully", User.Identity.Name, emailSanitized);
 
                 return RedirectToAction(nameof(Index));
             }
