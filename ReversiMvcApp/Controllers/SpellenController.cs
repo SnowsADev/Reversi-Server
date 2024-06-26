@@ -218,7 +218,7 @@ namespace ReversiMvcApp.Controllers
                 return NotFound();
             }
 
-            if (spel.Spelers.Count() == 2)
+            if (spel.Spelers.Count == 2)
             {
                 winnaarSpeler = spel.Spelers.FirstOrDefault(s => s.Id != geeftOpSpeler.Id);
                 winnaarSpeler.AantalGewonnen += 1;

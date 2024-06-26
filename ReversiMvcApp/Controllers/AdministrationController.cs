@@ -29,6 +29,7 @@ namespace ReversiMvcApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
         {
             if (ModelState.IsValid)
@@ -65,6 +66,7 @@ namespace ReversiMvcApp.Controllers
 
         //Update
         [HttpGet]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditRole(string id)
         {
             IdentityRole role = await _roleManager.FindByIdAsync(id);
@@ -95,6 +97,7 @@ namespace ReversiMvcApp.Controllers
         }
 
         [HttpGet]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditUsersInRole(string id)
         {
             IdentityRole role = await _roleManager.FindByIdAsync(id);
@@ -123,6 +126,7 @@ namespace ReversiMvcApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> models, string roleId)
         {
             IdentityRole role = await _roleManager.FindByIdAsync(roleId);
@@ -151,9 +155,5 @@ namespace ReversiMvcApp.Controllers
 
             return RedirectToAction(nameof(EditRole), new { id = role.Id });
         }
-
-
     }
-
-
 }

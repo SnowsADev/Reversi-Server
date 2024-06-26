@@ -13,6 +13,7 @@ namespace ReversiMvcApp.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("CORSPolicy")]
     public class ReversiController : ControllerBase
     {
         private readonly JsonSerializerOptions serializerOptions = new()

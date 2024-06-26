@@ -52,7 +52,7 @@ namespace ReversiMvcApp.Data.Context
         public void SeedData(ModelBuilder modelBuilder)
         {
             this.SeedUsers(modelBuilder);
-            this.SeedRoles(modelBuilder);
+            SeedRoles(modelBuilder);
             this.SeedUserRoles(modelBuilder);
         }
 
@@ -111,7 +111,7 @@ namespace ReversiMvcApp.Data.Context
             modelBuilder.Entity<Speler>().HasData(adminUser, mediatorUser, spelerUser);
         }
 
-        private void SeedRoles(ModelBuilder modelBuilder)
+        private static void SeedRoles(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<IdentityRole>().HasData(
                 new IdentityRole()

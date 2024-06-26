@@ -1,8 +1,10 @@
-﻿namespace ReversiMvcApp.Models.ViewModels.Administration
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ReversiMvcApp.Models.ViewModels.Administration
 {
     public class CreateRoleViewModel
     {
-        [required]
+        [Required]
         public string RoleName { get; set; }
     }
 }
