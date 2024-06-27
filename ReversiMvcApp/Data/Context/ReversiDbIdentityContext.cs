@@ -200,15 +200,6 @@ namespace ReversiMvcApp.Data.Context
         private void HandleAuditableEntries()
         {
             var modifiedEntries = ChangeTracker.Entries()
-                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified)
-                .Select(e => 
-                {
-                    if (e.Entity is IHasTimestamp entityWithTimestamp)
-                    {
-                        entityWithTimestamp.Timestamp = DateTime.UtcNow;
-                    }
-                    return e;
-                });
                 .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
 
             foreach (EntityEntry entry in modifiedEntries)
@@ -220,12 +211,12 @@ namespace ReversiMvcApp.Data.Context
 
                 if (entry.State == EntityState.Modified && modifiedProperty != null)
                 {
-                    entry.Property("Modified").CurrentValue = DateTime.Now;
+                    entry.Property("Modified").CurrentValue = DateTime.UtcNow;
                 }
 
                 if (entry.State == EntityState.Added && createdProperty != null)
                 {
-                    entry.Property("Created").CurrentValue = DateTime.Now;
+                    entry.Property("Created").CurrentValue = DateTime.UtcNow;
                 }
             }
         }
