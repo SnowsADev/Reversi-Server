@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using ReversiMvcApp.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -14,10 +15,12 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
     public class ResetPasswordModel : PageModel
     {
         private readonly UserManager<Speler> _userManager;
+        private readonly ILogger<ResetPasswordModel> _logger;
 
-        public ResetPasswordModel(UserManager<Speler> userManager)
+        public ResetPasswordModel(UserManager<Speler> userManager, ILogger<ResetPasswordModel> logger)
         {
             _userManager = userManager;
+            this._logger = logger;
         }
 
         [BindProperty]
@@ -73,6 +76,8 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
             }
 
             var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
+            _logger.LogInformation($"User account password has been reset (id: {user.Id})");
+
             if (result.Succeeded)
             {
                 return RedirectToPage("./ResetPasswordConfirmation");

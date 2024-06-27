@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Build.Framework;
+using Microsoft.Extensions.Logging;
 using ReversiMvcApp.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -17,11 +19,13 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
     {
         private readonly UserManager<Speler> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly ILogger<ForgotPasswordModel> _logger;
 
-        public ForgotPasswordModel(UserManager<Speler> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<Speler> userManager, IEmailSender emailSender, ILogger<ForgotPasswordModel> logger)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            this._logger = logger;
         }
 
         [BindProperty]
@@ -29,7 +33,7 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Microsoft.Build.Framework.Required]
             [EmailAddress]
             public string Email { get; set; }
         }
@@ -48,6 +52,8 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
                 // For more information on how to enable account confirmation and password reset please 
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                _logger.LogInformation($"User requested a password reset token (id: {user.Id})");
+
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
