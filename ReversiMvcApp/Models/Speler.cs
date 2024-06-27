@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using ReversiMvcApp.Models.Abstract;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReversiMvcApp.Models
 {
-    public class Speler : IdentityUser
+    public class Speler : IdentityUser, IAuditable
     {
         public string Naam { get; set; } = string.Empty;
         public int AantalGewonnen { get; set; } = 0;
@@ -13,10 +15,14 @@ namespace ReversiMvcApp.Models
 
         public Kleur Kleur { get; set; } = Kleur.Geen;
 
+        public DateTime? CreatedOn { get; set; } = DateTime.UtcNow;
+        public DateTime? LastUpdated { get; set; } = DateTime.UtcNow;
+
+
         //relations
         [ForeignKey("Spel")]
         public Spel ActueelSpel { get; set; }
-
+        
         public Speler() { }
 
         public override bool Equals(object obj)

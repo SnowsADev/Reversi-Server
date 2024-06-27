@@ -1,5 +1,6 @@
 ﻿using ReversiMvcApp.Extensions;
 using ReversiMvcApp.Models.Abstract;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +9,7 @@ using System.Linq;
 namespace ReversiMvcApp.Models
 {
 
-    public class Spel : Auditable, ISpel
+    public class Spel : IAuditable, ISpel
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
@@ -30,6 +31,9 @@ namespace ReversiMvcApp.Models
         {
             get { return GetMogelijkeZetten(); }
         }
+
+        public DateTime? CreatedOn { get; set; } = DateTime.UtcNow;
+        public DateTime? LastUpdated { get; set; } = DateTime.UtcNow;
 
         public Spel()
         {

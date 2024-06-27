@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using AspNetCore.ReCaptcha;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using ReversiMvcApp.Models;
+using ReversiMvcApp.Services;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,17 +25,20 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
         private readonly UserManager<Speler> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IReCaptchaValidatorService reCaptchaValidator;
 
         public RegisterModel(
             UserManager<Speler> userManager,
             SignInManager<Speler> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IReCaptchaValidatorService reCaptchaValidator)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            this.reCaptchaValidator = reCaptchaValidator;
         }
 
         [BindProperty]
@@ -43,6 +48,7 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
+        [ValidateReCaptcha]
         public class InputModel
         {
             [Required]
@@ -51,7 +57,7 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(128, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 12)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -78,13 +84,29 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            string recaptchaResponse = Request.Form["g-recaptcha-response"];
+            if (!string.IsNullOrEmpty(recaptchaResponse))
+            {
+                var validationResult = await reCaptchaValidator.TryValidateReCaptchaResponse(HttpContext, recaptchaResponse);
+
+                if (!validationResult.isValid)
+                {
+                    ModelState.AddModelError(string.Empty, validationResult.errorMessage);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Please don't forget to fill in the reCaptcha");
+            }
+
+
             if (ModelState.IsValid)
             {
                 var user = new Speler { UserName = Input.Email, Email = Input.Email, Naam = Input.Naam };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
                     await _userManager.AddToRoleAsync(user, "Speler");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -92,7 +114,7 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                        values: new { area = "Identity", userId = user.Id, code, returnUrl },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
@@ -100,10 +122,12 @@ namespace ReversiMvcApp.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        _logger.LogInformation($"New unconfirmed user created (id: {user.Id})");
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
                     }
                     else
                     {
+                        _logger.LogInformation($"New unconfirmed user created (id: {user.Id})");
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }

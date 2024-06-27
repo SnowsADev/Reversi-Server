@@ -40,8 +40,20 @@ namespace ReversiMvcApp.Data.Context
             );
 
             modelBuilder.Entity<Spel>()
+                .Property<DateTime?>("Created");
+
+            modelBuilder.Entity<Spel>()
+                .Property<DateTime?>("Modified");
+
+            modelBuilder.Entity<Spel>()
                 .Property(spel => spel.Bord)
                 .HasConversion(bordConverter);
+
+            modelBuilder.Entity<Speler>()
+                .Property<DateTime?>("Created");
+
+            modelBuilder.Entity<Speler>()
+                .Property<DateTime?>("Modified");
 
             modelBuilder.Entity<Speler>()
                 .HasOne<Spel>()
@@ -187,43 +199,24 @@ namespace ReversiMvcApp.Data.Context
 
         private void HandleAuditableEntries()
         {
-            //Added
-            IEnumerable<object> insertedEntries = ChangeTracker.Entries()
-                                               .Where(x => x.State == EntityState.Added)
-                                               .Select(x => x.Entity);
+            var modifiedEntries = ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
 
-            foreach (var insertedEntry in insertedEntries)
+            foreach (EntityEntry entry in modifiedEntries)
             {
-                if (insertedEntry is Auditable auditableEntity)
+                var entityType = entry.Context.Model.FindEntityType(entry.Entity.GetType());
+
+                var modifiedProperty = entityType.FindProperty("Modified");
+                var createdProperty = entityType.FindProperty("Created");
+
+                if (entry.State == EntityState.Modified && modifiedProperty != null)
                 {
-                    auditableEntity.CreatedOn = DateTime.Now;
+                    entry.Property("Modified").CurrentValue = DateTime.UtcNow;
                 }
-            }
 
-            //Modified
-            IEnumerable<object> modifiedEntries = ChangeTracker.Entries()
-                                               .Where(x => x.State == EntityState.Modified)
-                                               .Select(x => x.Entity);
-
-            foreach (var modifiedEntry in modifiedEntries)
-            {
-                if (modifiedEntry is Auditable auditableEntity)
+                if (entry.State == EntityState.Added && createdProperty != null)
                 {
-                    auditableEntity.LastUpdated = DateTime.Now;
-                }
-            }
-
-            //Deleted
-            IEnumerable<object> DeletedEntries = ChangeTracker.Entries()
-                                              .Where(x => x.State == EntityState.Deleted)
-                                              .Select(x => x.Entity);
-
-            foreach (var deletedEntry in DeletedEntries)
-            {
-                if (deletedEntry is Auditable auditableEntity)
-                {
-                    auditableEntity.IsDeleted = true;
-                    auditableEntity.LastUpdated = DateTime.Now;
+                    entry.Property("Created").CurrentValue = DateTime.UtcNow;
                 }
             }
         }

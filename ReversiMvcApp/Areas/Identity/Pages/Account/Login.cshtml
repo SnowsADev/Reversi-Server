@@ -1,4 +1,6 @@
 ﻿@page
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration configuration;
 @model LoginModel
 
 @{
@@ -32,7 +34,12 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Log in</button>
+                    <div class="g-recaptcha" data-sitekey="@configuration["ReCAPTCHA:SiteKey"]" />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                            Log in
+                    </button>
                 </div>
                 <div class="form-group">
                     <p>
@@ -83,4 +90,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer asp-add-nonce></script>
 }

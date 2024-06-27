@@ -2,12 +2,9 @@
 
 namespace ReversiMvcApp.Models.Abstract
 {
-    public abstract class Auditable
+    public interface IAuditable
     {
-        public DateTime CreatedOn { get; set; } = DateTime.Now;
-        public DateTime LastUpdated { get; set; } = DateTime.MinValue;
-        public bool IsDeleted { get; set; } = false;
+        DateTime? CreatedOn { get; set; }
+        DateTime? LastUpdated { get; set; }
     }
-
-
 }

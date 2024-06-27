@@ -1,3 +1,4 @@
+using AspNetCore.ReCaptcha;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.Certificate;
@@ -17,6 +18,7 @@ using ReversiMvcApp.Data.Context;
 using ReversiMvcApp.Hangfire;
 using ReversiMvcApp.Interfaces;
 using ReversiMvcApp.Models;
+using ReversiMvcApp.Services;
 using ReversiMvcApp.SignalR;
 using System;
 using System.Diagnostics;
@@ -35,6 +37,8 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 #region Logging
 builder.Logging.AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Trace);
 builder.Logging.AddFilter("Microsoft.AspNetCore.Http.Connections", LogLevel.Trace);
+builder.Logging.AddConsole();
+
 #endregion
 
 builder.WebHost.UseUrls("http://localhost:5000");
@@ -66,12 +70,15 @@ services.AddIdentity<Speler, IdentityRole>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 10;
+    options.Password.RequiredLength = 12;
 })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ReversiDbIdentityContext>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
+
+// reCaptcha
+services.AddReCaptcha(builder.Configuration.GetSection("ReCaptcha"));
 
 // MVC
 services.AddRazorPages();
@@ -85,6 +92,7 @@ services.AddSignalR();
 services.AddScoped<ISpelRepository, SpelAccessLayer>();
 services.AddScoped<IUserRepository, UserAccessLayer>();
 services.AddScoped<ISpelJob, SpelJob>();
+services.AddScoped<IReCaptchaValidatorService, ReCaptchaValidatorService>();
 
 //Hangfire
 services.AddHangfire(configuration => configuration
@@ -112,17 +120,6 @@ services.ConfigureApplicationCookie(options =>
         context.Response.Redirect("/Account/Logout");
         return Task.CompletedTask;
     };
-});
-
-services.AddRateLimiter(options =>
-{
-    options.AddFixedWindowLimiter("Rate-Limit", opt =>
-    {
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.PermitLimit = 50;
-        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
-        opt.QueueLimit = 2;
-    });
 });
 
 // CORS
@@ -213,7 +210,12 @@ var policyCollection = new HeaderPolicyCollection()
             builder.AddImgSrc() // img-src https:
                 .Self();
             
-            builder.AddFrameSrc().None();
+            builder.AddFrameSrc()
+                .Self()
+                .From("https://www.google.com/recaptcha/")
+                .From("https://recaptcha.google.com/recaptcha/")
+                .WithNonce();
+
             builder.AddFrameAncestors().None();
             builder.AddMediaSrc().None();
             builder.AddObjectSrc().None();
@@ -224,6 +226,7 @@ var policyCollection = new HeaderPolicyCollection()
                 .Self()
                 .From("cdn.jsdelivr.net")
                 .From("ajax.googleapis.com")
+                .From("google.com/recaptcha")
                 .WithNonce();
 
             builder.AddStyleSrc() // style-src 'self' 'strict-dynamic'
@@ -238,26 +241,19 @@ var policyCollection = new HeaderPolicyCollection()
         });
 
 app.UseSecurityHeaders(policyCollection);
-app.UseRateLimiter();
-app.UseSecurityHeaders(policyCollection);
 
 //Mapping
 app.MapControllers()
-    .RequireCors(CORSPolicy)
-    .RequireRateLimiting("Rate-Limit");
+    .RequireCors(CORSPolicy);
 
 app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}")
-    .RequireCors(CORSPolicy)
-    .RequireRateLimiting("Rate-Limit");
+    .RequireCors(CORSPolicy);
 
 app.MapRazorPages()
-    .RequireCors(CORSPolicy)
-    .RequireRateLimiting("Rate-Limit");
-
-app.MapHub<SpelHub>("/spelHub")
-    .RequireRateLimiting("Rate-Limit");
+    .RequireCors(CORSPolicy);
+app.MapHub<SpelHub>("/spelHub");
 
 app.MapHangfireDashboard(new DashboardOptions
 {
